@@ -1,4 +1,3 @@
-```shell
 docker run --name mariadb -d \
     -p 3306:3306 \
     --restart=always \
@@ -8,4 +7,3 @@ docker run --name mariadb -d \
     -e MARIADB_PASSWORD=devpass \
     -e MARIADB_DATABASE=orm \
     mariadb:11.4.2-noble
-```

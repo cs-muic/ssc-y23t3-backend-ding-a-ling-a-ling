@@ -15,31 +15,54 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Account Details
+    @Column(unique = true)
     private String username;
 
-    private String name;
+    @Column(nullable = false, length = 150)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
+    // Personal Details
+    @Column(name = "first_name")
+    private String FirstName;
+
+    @Column(name = "last_name")
+    private String LastName;
+
+    private int age;
 
     private String address;
 
-    @Column(name = "group_name")
-    private String group;
+    @Column(name = "height_in_cm")
+    private double height;
+
+    // Initial Dating Profile
+    @Column(name = "display_name")
+    private String displayName;
+
+    @Column(name = "profile_picture_url")
+    private String profilePicture;
+
+    @Column(name = "contact_number")
+    private String contact;
+
+    @Column(length = 5000) // A longer field for a biography
+    private String biography;
 
     @ElementCollection
-    @CollectionTable(name = "join_user_role", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "role")
-    private Set<String> roles = new HashSet<>();
+    @Column(name = "preferences")
+    private Set<String> preferences = new HashSet<>();
 
-    @ManyToMany(cascade = CascadeType.REMOVE)
-    @JoinTable(name = "join_user_group",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "group_id")
-    )
-    private Set<UserGroup> groups = new HashSet<>();
+    @ElementCollection
+    @Column(name = "dislikes")
+    private Set<String> dislikes = new HashSet<>();
 
 
 }

@@ -21,6 +21,8 @@ import java.util.Set;
 @Getter
 public class UserGroup {
 
+    //TODO: Add relationship on the same ppl that have the same dislikes
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
