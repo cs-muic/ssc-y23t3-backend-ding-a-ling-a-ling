@@ -1,10 +1,7 @@
 package io.muzoo.ssc.springwebapp;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,6 +11,8 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+
+@Data
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,8 +37,6 @@ public class User {
 
     private int age;
 
-    private String address;
-
     @Column(name = "height_in_cm")
     private double height;
 
@@ -63,6 +60,5 @@ public class User {
     @ElementCollection
     @Column(name = "dislikes")
     private Set<String> dislikes = new HashSet<>();
-
 
 }
