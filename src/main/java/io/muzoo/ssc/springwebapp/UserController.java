@@ -64,7 +64,7 @@ public class UserController {
             @RequestParam String address,
             @RequestParam String email,
             @RequestParam String password,
-            @RequestParam String phone,
+            @RequestParam String phoneNumber,
             @RequestParam double height,
             @RequestParam String displayName,
             @RequestParam String profilePicture,
@@ -84,7 +84,7 @@ public class UserController {
         userDTO.setDisplayName(displayName);
         userDTO.setProfilePicture(profilePicture); // should be the bucket url
         userDTO.setContact(contact);
-        userDTO.setPhoneNumber(phone);
+        userDTO.setPhoneNumber(phoneNumber);
         userDTO.setBiography(biography);
         userDTO.setPreferences(preferences);
         userDTO.setDislikes(dislikes);
