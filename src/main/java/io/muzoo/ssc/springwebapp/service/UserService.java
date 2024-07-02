@@ -1,7 +1,11 @@
-package io.muzoo.ssc.springwebapp;
+package io.muzoo.ssc.springwebapp.service;
 
+import io.muzoo.ssc.springwebapp.models.User;
+import io.muzoo.ssc.springwebapp.dto.UserDTO;
+import io.muzoo.ssc.springwebapp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 import java.util.Set;
 
@@ -63,6 +67,19 @@ public class UserService {
     public Set<User> match(String username) {
         return userRepository.findByDislikes(userRepository.findByUsername(username).getDislikes());
     }
+//
+//    public User getLogin(String username, String password) {
+//        User user = userRepository.findByUsername(username);
+//        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
+//            return user;
+//        }
+//        return null;
+//    }
+
+//
+//    @Autowired
+//    private PasswordEncoder passwordEncoder;
+
 
     private void setUserInfo (User user, UserDTO userDTO) {
 

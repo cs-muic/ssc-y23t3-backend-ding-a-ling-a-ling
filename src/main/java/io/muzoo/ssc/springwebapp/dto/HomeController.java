@@ -1,4 +1,4 @@
-package io.muzoo.ssc.springwebapp;
+package io.muzoo.ssc.springwebapp.dto;
 
 
 import org.springframework.web.bind.annotation.GetMapping;

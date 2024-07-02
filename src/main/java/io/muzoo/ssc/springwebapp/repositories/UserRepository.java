@@ -1,5 +1,6 @@
-package io.muzoo.ssc.springwebapp;
+package io.muzoo.ssc.springwebapp.repositories;
 
+import io.muzoo.ssc.springwebapp.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

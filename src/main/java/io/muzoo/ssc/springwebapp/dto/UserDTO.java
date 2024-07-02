@@ -1,5 +1,6 @@
-package io.muzoo.ssc.springwebapp;
+package io.muzoo.ssc.springwebapp.dto;
 
+import io.muzoo.ssc.springwebapp.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ public class UserDTO {
     private int age;
     private double height;
     private Set<String> preferences, dislikes;
+
 
     UserDTO(User user) {
         this.username = user.getUsername();

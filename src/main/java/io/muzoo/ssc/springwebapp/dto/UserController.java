@@ -1,5 +1,8 @@
-package io.muzoo.ssc.springwebapp;
+package io.muzoo.ssc.springwebapp.dto;
 
+import io.muzoo.ssc.springwebapp.SimpleService;
+import io.muzoo.ssc.springwebapp.models.User;
+import io.muzoo.ssc.springwebapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -101,6 +104,13 @@ public class UserController {
         return userService.getProfile(username);
     }
 
-    // Mapping for Mathching page can use match function in UserService
+//    @GetMapping("/api/login")
+//    public User login(
+//            @RequestParam String username,
+//            @RequestParam String password
+//    ){
+//        return userService.getLogin(username, password);
+//    }
+
 
 }

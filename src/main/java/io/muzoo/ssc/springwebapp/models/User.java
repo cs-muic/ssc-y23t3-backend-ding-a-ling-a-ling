@@ -1,4 +1,4 @@
-package io.muzoo.ssc.springwebapp;
+package io.muzoo.ssc.springwebapp.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
