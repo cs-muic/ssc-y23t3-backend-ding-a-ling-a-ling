@@ -1,20 +1,27 @@
 package io.muzoo.ssc.springwebapp.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-@Setter
-@Getter
-@Entity
+//@Setter
+//@Getter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+@Entity
+@ToString
+
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,14 +66,52 @@ public class User {
     @Column(length = 5000) // A longer field for a biography
     private String biography;
 
+    // create the roles for the user
+    @Enumerated(EnumType.STRING)
+    Role role;
+    LocalDateTime createdAt;
+    LocalDateTime updatedAt;
+
+
     @ElementCollection
-    @CollectionTable(name = "join_user_preferences", joinColumns = @JoinColumn(name = "user_id"))
+//    @CollectionTable(name = "join_user_preferences", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "preference")
     private Set<String> preferences = new HashSet<>();
 
     @ElementCollection
-    @CollectionTable(name = "join_user_dislikes", joinColumns = @JoinColumn(name = "user_id"))
+//    @CollectionTable(name = "join_user_dislikes", joinColumns = @JoinColumn(name = "dislike"))
     @Column(name = "dislike")
     private Set<String> dislikes = new HashSet<>();
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        // our "username" for security is the email field
+        return email;
+    }
+
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
