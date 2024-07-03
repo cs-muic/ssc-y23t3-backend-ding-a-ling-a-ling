@@ -1,6 +1,8 @@
-package io.muzoo.ssc.springwebapp;
+package io.muzoo.ssc.springwebapp.config;
 
 
+import io.muzoo.ssc.springwebapp.SimpleService;
+import io.muzoo.ssc.springwebapp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

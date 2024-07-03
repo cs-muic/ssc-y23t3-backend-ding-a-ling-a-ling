@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package io.muzoo.ssc.springwebapp;
+package io.muzoo.ssc.springwebapp.models;
 
 import jakarta.persistence.*;
 import lombok.Getter;

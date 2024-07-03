@@ -1,15 +1,39 @@
-package io.muzoo.ssc.springwebapp;
+package io.muzoo.ssc.springwebapp.service;
 
+import io.muzoo.ssc.springwebapp.dto.AuthenticationResponse;
+import io.muzoo.ssc.springwebapp.dto.UserDTO;
+import io.muzoo.ssc.springwebapp.models.User;
+import io.muzoo.ssc.springwebapp.repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+
+
+    private final UserRepository userRepository;
+
+    public UserDetailsService userDetailsService() {
+        return new UserDetailsService() {
+            @Override
+            public UserDetails loadUserByUsername(String username) {
+                return userRepository.findByEmail(username)
+                        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            }
+
+        };
+    }
 
     public User getUser(Long id) {
         return userRepository.findById(id).orElse(null);
@@ -64,7 +88,7 @@ public class UserService {
         return userRepository.findByDislikes(userRepository.findByUsername(username).getDislikes());
     }
 
-    private void setUserInfo (User user, UserDTO userDTO) {
+    private void setUserInfo(User user, UserDTO userDTO) {
 
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
@@ -83,4 +107,14 @@ public class UserService {
         user.setDislikes(userDTO.getDislikes());
 
     }
+
+    public User save(User newUser) {
+        if (newUser.getId() == null) {
+            newUser.setCreatedAt(LocalDateTime.now());
+        }
+
+        newUser.setUpdatedAt(LocalDateTime.now());
+        return userRepository.save(newUser);
+    }
+
 }

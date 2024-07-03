@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    image: "mariadb:11.4.2-noble"
+    container_name: spring-boot-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/orm?useSSL=false&useUnicode=yes&characterEncoding=UTF-8
+      SPRING_DATASOURCE_USERNAME: dev
+      SPRING_DATASOURCE_PASSWORD: devpass
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.mariadb.jdbc.Driver
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      TOKEN_SECRET_KEY: 4b325d30db6e01e19fc6c08bc9996a08a473d14dbd349801feeb04174b81f7b1
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+  db:
+    image: "mariadb:11.4.2-noble"
+    container_name: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: devpass
+      MYSQL_DATABASE: orm
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: devpass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+volumes:
+  mariadb_data:
