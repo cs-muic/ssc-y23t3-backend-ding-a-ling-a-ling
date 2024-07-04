@@ -18,21 +18,25 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService{
 
 
 
     private final UserRepository userRepository;
 
-    public UserDetailsService userDetailsService() {
-        return new UserDetailsService() {
-            @Override
-            public UserDetails loadUserByUsername(String username) {
-                return userRepository.findByEmail(username)
-                        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-            }
-
-        };
+//    public UserDetailsService userDetailsService() {
+//        return new UserDetailsService() {
+//            @Override
+//            public UserDetails loadUserByUsername(String username) {
+//                return userRepository.findByUsername(username) // username seems to be email
+//                        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+//            }
+//
+//        };
+//    }
+    public UserDetails loadUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     public User getUser(Long id) {
@@ -40,11 +44,11 @@ public class UserService {
     }
 
     public User search(String username) {
-        return userRepository.findByUsername(username);
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     public String getProfile(String username) {
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         if (user != null) {
             StringBuilder profiles = new StringBuilder();
             profiles.append("Username: ").append(user.getUsername()).append("\n");
@@ -75,17 +79,13 @@ public class UserService {
 
 
     public String updateUser(UserDTO userDTO) {
-        User user = userRepository.findByUsername(userDTO.getUsername());
+        User user = userRepository.findByUsername(userDTO.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         if (user != null) {
             setUserInfo(user, userDTO);
             userRepository.save(user);
             return String.format("Updated user %s successfully", userDTO.getUsername());
         }
         return "User not found";
-    }
-
-    public Set<User> match(String username) {
-        return userRepository.findByDislikes(userRepository.findByUsername(username).getDislikes());
     }
 
     private void setUserInfo(User user, UserDTO userDTO) {

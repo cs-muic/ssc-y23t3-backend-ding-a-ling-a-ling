@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    User findByUsername(String username);
+    Optional<User> findByUsername(String username);
     Set<User> findByDislikes(Set<String> username);
     Optional<User> findByEmail(String email);
 }

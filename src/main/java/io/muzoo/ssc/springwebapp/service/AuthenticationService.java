@@ -9,6 +9,7 @@ import io.muzoo.ssc.springwebapp.repositories.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -50,7 +51,7 @@ public class AuthenticationService {
                 .build();
 
         user = userService.save(user);
-        var jwt = jwtService.generateToken(user);
+        var jwt = jwtService.generateToken(user.getUsername());
         return AuthenticationResponse.builder().token(jwt).build();
     }
 
@@ -58,13 +59,20 @@ public class AuthenticationService {
     public AuthenticationResponse signin(SignInRequest request) {
         try {
             // Authenticating the user's credentials
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-            var user = userRepository.findByEmail(request.getEmail())
+
+            String password = request.getPassword();
+            String email = request.getEmail();
+
+            var user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
 
 
-            var jwt = jwtService.generateToken(user);
+            if (!passwordEncoder.matches(password, user.getPassword())) {
+                throw new IllegalArgumentException("Invalid email or password.");
+            }
+
+            var jwt = jwtService.generateToken(user.getUsername());
+
             return AuthenticationResponse.builder().token(jwt).build();
         } catch (AuthenticationException e) {
             throw new IllegalArgumentException("Authentication failed", e);

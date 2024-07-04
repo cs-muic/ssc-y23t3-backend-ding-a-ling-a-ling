@@ -10,7 +10,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: devpass
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.mariadb.jdbc.Driver
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      TOKEN_SECRET_KEY: 4b325d30db6e01e19fc6c08bc9996a08a473d14dbd349801feeb04174b81f7b1
+      TOKEN_SECRET_KEY: e1f09f4a523f1fb355ce7ed07d2e186372d608aaa45407738c658a2c9d2a18a2
     ports:
       - "8080:8080"
     depends_on:

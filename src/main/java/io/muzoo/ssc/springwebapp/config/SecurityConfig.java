@@ -34,7 +34,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userService.userDetailsService());
+        authProvider.setUserDetailsService(userService);
         authProvider.setPasswordEncoder(passwordEncoder);
         return authProvider;
     }
@@ -53,7 +53,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/api/signup", "/api/signin").permitAll() // Allow POST to signup and signin
-                        .requestMatchers(HttpMethod.GET, "/api/test/**", "/api/allusers").permitAll()  // Other GET requests
+                        .requestMatchers(HttpMethod.GET, "/api/test/**").permitAll()  // Other GET requests
                         .anyRequest().authenticated()  // All other requests need authentication
                 )
                 .authenticationProvider(authenticationProvider())

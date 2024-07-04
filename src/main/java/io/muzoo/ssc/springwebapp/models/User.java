@@ -91,7 +91,7 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         // our "username" for security is the email field
-        return email;
+        return username;
     }
 
 

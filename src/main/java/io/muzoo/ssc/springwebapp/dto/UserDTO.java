@@ -25,22 +25,4 @@ public class UserDTO {
     private double height;
     private Set<String> preferences, dislikes;
 
-
-//    UserDTO(User user) {
-//        this.username = user.getUsername();
-//        this.email = user.getEmail();
-//        this.address = user.getAddress();
-//        this.password = user.getPassword();
-//        this.firstName = user.getFirstName();
-//        this.lastName = user.getLastName();
-//        this.phoneNumber = user.getPhoneNumber();
-//        this.age = user.getAge();
-//        this.height = user.getHeight();
-//        this.displayName = user.getDisplayName();
-//        this.profilePicture = user.getProfilePicture();
-//        this.contact = user.getContact();
-//        this.biography = user.getBiography();
-//        this.preferences = user.getPreferences();
-//        this.dislikes = user.getDislikes();
-//    }
 }

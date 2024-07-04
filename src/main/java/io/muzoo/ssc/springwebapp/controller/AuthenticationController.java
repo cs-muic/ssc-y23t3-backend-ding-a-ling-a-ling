@@ -37,52 +37,5 @@ public class AuthenticationController {
         return authenticationService.signin(request);
     }
 
-//    @GetMapping("/search")
-//    @PreAuthorize("hasRole('USER')")
-//    public User search(@RequestParam(required = false) String q) {
-//        return userService.search(q);
-//    }
-
-//    @GetMapping("/profile/{username}")
-//    @PreAuthorize("hasRole('USER')")
-//    public String getProfile(@PathVariable String username) {
-//        return userService.getProfile(username);
-//    }
-
-//    @PostMapping("/update") //TODO: can change the para, to restrict user to change stuff
-//    @PreAuthorize("hasRole('USER')")
-//    public String updateUser(
-//            @RequestParam String username,
-//            @RequestParam String firstname,
-//            @RequestParam String lastname,
-//            @RequestParam String address,
-//            @RequestParam String email,
-//            @RequestParam String password,
-//            @RequestParam String phoneNumber,
-//            @RequestParam double height,
-//            @RequestParam String displayName,
-//            @RequestParam String profilePicture,
-//            @RequestParam String contact,
-//            @RequestParam String biography,
-//            @RequestParam Set<String> preferences,
-//            @RequestParam Set<String> dislikes
-//    ) {
-//        UserDTO userDTO = new UserDTO();
-//        userDTO.setUsername(username);
-//        userDTO.setEmail(email);
-//        userDTO.setPassword(password);
-//        userDTO.setFirstName(firstname);
-//        userDTO.setLastName(lastname);
-//        userDTO.setAddress(address);
-//        userDTO.setHeight(height);
-//        userDTO.setDisplayName(displayName);
-//        userDTO.setProfilePicture(profilePicture); // should be the bucket url
-//        userDTO.setContact(contact);
-//        userDTO.setPhoneNumber(phoneNumber);
-//        userDTO.setBiography(biography);
-//        userDTO.setPreferences(preferences);
-//        userDTO.setDislikes(dislikes);
-//        return userService.updateUser(userDTO);
-//    }
 
 }

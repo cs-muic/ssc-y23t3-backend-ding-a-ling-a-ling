@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -17,7 +16,7 @@ public class SignUpRequest {
     String lastName;
     String email;
     String password;
-    String Username;
+    String username;
     String Address;
     String phoneNumber;
     int age;
@@ -28,4 +27,5 @@ public class SignUpRequest {
     String biography;;
     Set<String> dislikes;
     Set<String> preferences;
+
 }
