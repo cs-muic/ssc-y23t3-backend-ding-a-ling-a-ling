@@ -1,11 +1,20 @@
-```shell
-docker run --name mariadb -d \
-    -p 3306:3306 \
-    --restart=always \
-    -v "$(pwd)/data":/var/lib/mysql \
-    -e MARIADB_ROOT_PASSWORD=devpass \
-    -e MARIADB_USER=dev \
-    -e MARIADB_PASSWORD=devpass \
-    -e MARIADB_DATABASE=orm \
-    mariadb:11.4.2-noble
-```
+# To do ✅
+
+### 1. Run the project to start docker container 🐳
+
+
+### 2. Run this in terminal to get the key ⌨️
+    ```bash 
+     console.log(require('crypto').randomBytes(32).toString('hex'))
+    ```
+
+
+### 3. Paste the key in 🗝️
+- resources/application.properties `token.secret.key`
+- in docker-compose.yml `TOKEN_SECRET_KEY`
+
+
+### 4. Run the project again 🏃🏻‍
+
+
+## DONE 🧤

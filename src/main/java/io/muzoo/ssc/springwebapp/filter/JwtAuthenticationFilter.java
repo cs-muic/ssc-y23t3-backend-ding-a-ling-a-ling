@@ -39,8 +39,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             jwtToken = authorizationHeader.substring(7);
             try {
                 username = jwtTokenUtil.extractUsername(jwtToken);
-                System.out.println("JWT: " + jwtToken);
-                System.out.println("Username: " + username);
             } catch (Exception e) {
                 // Handle token extraction/validation errors
                 System.out.println("Error extracting username from token: " + e.getMessage());

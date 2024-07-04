@@ -1,6 +1,7 @@
 package io.muzoo.ssc.springwebapp.service;
 
 import io.muzoo.ssc.springwebapp.dto.AuthenticationResponse;
+import io.muzoo.ssc.springwebapp.dto.UpdateUserRequest;
 import io.muzoo.ssc.springwebapp.dto.UserDTO;
 import io.muzoo.ssc.springwebapp.models.User;
 import io.muzoo.ssc.springwebapp.repositories.UserRepository;
@@ -20,20 +21,10 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService{
 
-
-
     private final UserRepository userRepository;
+    final PasswordEncoder passwordEncoder;
+    final JwtService jwtService;
 
-//    public UserDetailsService userDetailsService() {
-//        return new UserDetailsService() {
-//            @Override
-//            public UserDetails loadUserByUsername(String username) {
-//                return userRepository.findByUsername(username) // username seems to be email
-//                        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-//            }
-//
-//        };
-//    }
     public UserDetails loadUserByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -78,14 +69,70 @@ public class UserService implements UserDetailsService{
     }
 
 
-    public String updateUser(UserDTO userDTO) {
-        User user = userRepository.findByUsername(userDTO.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        if (user != null) {
-            setUserInfo(user, userDTO);
-            userRepository.save(user);
-            return String.format("Updated user %s successfully", userDTO.getUsername());
+    public String updateUser(UpdateUserRequest updateUserRequest) {
+        String token = updateUserRequest.getToken();
+        if (updateUserRequest.getToken() == null) {
+            return "Token is required";
         }
-        return "User not found";
+
+        String username = jwtService.extractUsername(token);
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if (!jwtService.validateToken(token, user)){
+            return "Token is invalid";
+        }
+        // change user info just the one that isn't black or null
+        String firstName = updateUserRequest.getFirstName();
+        String lastName = updateUserRequest.getLastName();
+        String address = updateUserRequest.getAddress();
+        String phoneNumber = updateUserRequest.getPhoneNumber();
+        int age = updateUserRequest.getAge();
+        double height = updateUserRequest.getHeight();
+        String displayName = updateUserRequest.getDisplayName();
+        String profilePicture = updateUserRequest.getProfilePicture();
+        String contact = updateUserRequest.getContact();
+        String biography = updateUserRequest.getBiography();
+        Set<String> dislikes = updateUserRequest.getDislikes();
+        Set<String> preferences = updateUserRequest.getPreferences();
+
+        if (firstName != null && !firstName.isBlank()) {
+            user.setFirstName(firstName);
+        }
+        if (lastName != null && !lastName.isBlank()) {
+            user.setLastName(lastName);
+        }
+        if (address != null && !address.isBlank()) {
+            user.setAddress(address);
+        }
+        if (phoneNumber != null && !phoneNumber.isBlank()) {
+            user.setPhoneNumber(phoneNumber);
+        }
+        if (age != 0) {
+            user.setAge(age);
+        }
+        if (height != 0) {
+            user.setHeight(height);
+        }
+        if (displayName != null && !displayName.isBlank()) {
+            user.setDisplayName(displayName);
+        }
+        if (profilePicture != null && !profilePicture.isBlank()) {
+            user.setProfilePicture(profilePicture);
+        }
+        if (contact != null && !contact.isBlank()) {
+            user.setContact(contact);
+        }
+        if (biography != null && !biography.isBlank()) {
+            user.setBiography(biography);
+        }
+        if (dislikes != null && !dislikes.isEmpty()) {
+            user.setDislikes(dislikes);
+        }
+        if (preferences != null && !preferences.isEmpty()) {
+            user.setPreferences(preferences);
+        }
+
+        userRepository.save(user);
+        return String.format("Updated user %s successfully", user.getUsername());
     }
 
     private void setUserInfo(User user, UserDTO userDTO) {
@@ -112,7 +159,6 @@ public class UserService implements UserDetailsService{
         if (newUser.getId() == null) {
             newUser.setCreatedAt(LocalDateTime.now());
         }
-
         newUser.setUpdatedAt(LocalDateTime.now());
         return userRepository.save(newUser);
     }

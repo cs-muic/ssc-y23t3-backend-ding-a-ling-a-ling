@@ -1,5 +1,6 @@
 package io.muzoo.ssc.springwebapp.repositories;
 
+import io.muzoo.ssc.springwebapp.dto.UserDTO;
 import io.muzoo.ssc.springwebapp.models.User;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;

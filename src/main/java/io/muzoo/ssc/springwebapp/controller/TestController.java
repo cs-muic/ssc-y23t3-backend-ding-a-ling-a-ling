@@ -1,15 +1,12 @@
 package io.muzoo.ssc.springwebapp.controller;
 
+import io.muzoo.ssc.springwebapp.dto.UpdateUserRequest;
 import io.muzoo.ssc.springwebapp.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;//package io.muzoo.ssc.springwebapp.controller;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import io.muzoo.ssc.springwebapp.SimpleService;
-import io.muzoo.ssc.springwebapp.dto.UserDTO;
-import io.muzoo.ssc.springwebapp.models.User;
 import io.muzoo.ssc.springwebapp.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,46 +43,10 @@ public class TestController {
         return userService.search(q);
     }
 
-        @GetMapping("/profile/{username}")
+    @GetMapping("/profile/{username}")
     @PreAuthorize("hasRole('USER')")
     public String getProfile(@PathVariable String username) {
         return userService.getProfile(username);
-    }
-
-    @PostMapping("/update") //TODO: can change the para, to restrict user to change stuff
-    @PreAuthorize("hasRole('USER')")
-    public String updateUser(
-            @RequestParam String username,
-            @RequestParam String firstname,
-            @RequestParam String lastname,
-            @RequestParam String address,
-            @RequestParam String email,
-            @RequestParam String password,
-            @RequestParam String phoneNumber,
-            @RequestParam double height,
-            @RequestParam String displayName,
-            @RequestParam String profilePicture,
-            @RequestParam String contact,
-            @RequestParam String biography,
-            @RequestParam Set<String> preferences,
-            @RequestParam Set<String> dislikes
-    ) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setUsername(username);
-        userDTO.setEmail(email);
-        userDTO.setPassword(password);
-        userDTO.setFirstName(firstname);
-        userDTO.setLastName(lastname);
-        userDTO.setAddress(address);
-        userDTO.setHeight(height);
-        userDTO.setDisplayName(displayName);
-        userDTO.setProfilePicture(profilePicture); // should be the bucket url
-        userDTO.setContact(contact);
-        userDTO.setPhoneNumber(phoneNumber);
-        userDTO.setBiography(biography);
-        userDTO.setPreferences(preferences);
-        userDTO.setDislikes(dislikes);
-        return userService.updateUser(userDTO);
     }
 
 
