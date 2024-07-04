@@ -4,9 +4,9 @@
 
 
 ### 2. Run this in terminal to get the key ⌨️
-    ```bash 
+```bash 
      console.log(require('crypto').randomBytes(32).toString('hex'))
-    ```
+```
 
 
 ### 3. Paste the key in 🗝️
