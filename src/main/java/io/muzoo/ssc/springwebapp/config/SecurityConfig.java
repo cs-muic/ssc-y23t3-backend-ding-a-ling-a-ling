@@ -47,19 +47,19 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf
-                        .disable()
-                )
+                .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/api/signup", "/api/signin").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/test/**",  "/api/allusers").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/signup", "/api/signin").permitAll() // Allow POST to signup and signin
+                        .requestMatchers(HttpMethod.GET, "/api/test/**", "/api/allusers").permitAll()  // Other GET requests
+                        .anyRequest().authenticated()  // All other requests need authentication
                 )
-                .authenticationProvider(authenticationProvider()).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
 }

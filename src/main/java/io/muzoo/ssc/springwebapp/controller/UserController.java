@@ -1,13 +1,10 @@
-package io.muzoo.ssc.springwebapp.dto;
+package io.muzoo.ssc.springwebapp.controller;
 
-import io.muzoo.ssc.springwebapp.SimpleService;
 import io.muzoo.ssc.springwebapp.models.User;
 import io.muzoo.ssc.springwebapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Set;
 
 @RestController
 public class UserController {
@@ -18,11 +15,11 @@ public class UserController {
 //    @Autowired
 //    private SimpleService simpleService;
 //
-//    @GetMapping("/api/user/{id}")
-//    @PreAuthorize("hasRole('USER')")
-//    public User getName(@PathVariable Long id) {
-//        return userService.getUser(id);
-//    }
+    @GetMapping("/api/user/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public User getName(@PathVariable Long id) {
+        return userService.getUser(id);
+    }
 //
 //    @PostMapping("/api/user/create")
 //    @PreAuthorize("hasRole('USER')")
