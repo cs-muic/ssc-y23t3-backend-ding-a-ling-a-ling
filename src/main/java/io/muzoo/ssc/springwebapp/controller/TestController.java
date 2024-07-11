@@ -52,9 +52,10 @@ public class TestController {
         return userService.getProfile(username);
     }
 
-    @PostMapping("/upload")
+    @PostMapping("/imgTest")
     public String uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
-        return imageService.saveImageToStorage("test", file);
+        return imageService.saveImageToStorage("test_image", file);
     }
+
 
 }

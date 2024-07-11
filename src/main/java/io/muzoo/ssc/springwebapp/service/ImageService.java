@@ -12,9 +12,13 @@ import java.util.UUID;
 @Service
 public class ImageService {
 
+    MultipartFile imagFile;
     // Save image in a local directory
     public String saveImageToStorage(String uploadDirectory, MultipartFile imageFile) throws IOException {
         String uniqueFileName = UUID.randomUUID().toString() + "_" + imageFile.getOriginalFilename();
+        System.out.println("the unique file name is " + uniqueFileName); // try check if this is working
+
+
 
         Path uploadPath = Path.of(uploadDirectory);
         Path filePath = uploadPath.resolve(uniqueFileName);
