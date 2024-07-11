@@ -7,22 +7,22 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.UUID;
+import java.util.Date;
 
 @Service
 public class ImageService {
 
-    MultipartFile imagFile;
+    UserService userService;
+
     // Save image in a local directory
-    public String saveImageToStorage(String uploadDirectory, MultipartFile imageFile) throws IOException {
-        String uniqueFileName = UUID.randomUUID().toString() + "_" + imageFile.getOriginalFilename();
+    public String saveImageToStorage(String username, String uploadDirectory, MultipartFile imageFile) throws IOException {
+        String uniqueFileName = username + "_" + new Date().getTime();
         System.out.println("the unique file name is " + uniqueFileName); // try check if this is working
 
-
-
-        Path uploadPath = Path.of(uploadDirectory);
+        Path uploadPath = Path.of(uploadDirectory, username);
         Path filePath = uploadPath.resolve(uniqueFileName);
 
+        System.out.println("the upload path is " + uploadPath); // try check if this is working
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }

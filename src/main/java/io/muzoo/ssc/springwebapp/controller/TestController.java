@@ -1,8 +1,10 @@
 package io.muzoo.ssc.springwebapp.controller;
 
 import io.muzoo.ssc.springwebapp.models.User;
+import io.muzoo.ssc.springwebapp.repositories.UserRepository;
 import io.muzoo.ssc.springwebapp.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.GetMapping;//package io.muzoo.ssc.springwebapp.controller;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -23,6 +25,10 @@ public class TestController {
 
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private UserController userController;
 
     @GetMapping("/anon")
     public String anonEndPoint() {
@@ -53,8 +59,8 @@ public class TestController {
     }
 
     @PostMapping("/imgTest")
-    public String uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
-        return imageService.saveImageToStorage("test_image", file);
+    public String uploadImage(@RequestParam("file") MultipartFile file, @RequestParam("username") String username) throws IOException {
+        return imageService.saveImageToStorage(username,"imageStorage", file);
     }
 
 

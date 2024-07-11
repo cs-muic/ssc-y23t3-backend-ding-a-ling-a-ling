@@ -57,8 +57,8 @@ public class User implements UserDetails {
     @Column(name = "display_name")
     private String displayName;
 
-    @Column(name = "profile_picture_url")
-    private String profilePicture;
+//    @Column(name = "profile_picture_url")
+//    private String profilePicture;
 
     @Column(name = "contact_number")
     private String contact;

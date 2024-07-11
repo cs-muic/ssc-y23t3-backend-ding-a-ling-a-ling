@@ -6,6 +6,7 @@ import io.muzoo.ssc.springwebapp.dto.SignUpRequest;
 import io.muzoo.ssc.springwebapp.models.Role;
 import io.muzoo.ssc.springwebapp.models.User;
 import io.muzoo.ssc.springwebapp.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -16,7 +17,9 @@ import org.springframework.stereotype.Service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -24,12 +27,21 @@ import java.util.List;
 public class AuthenticationService {
 
     public final UserRepository userRepository;
+
+    @Autowired
     final UserService userService;
+
     final PasswordEncoder passwordEncoder;
     final JwtService jwtService;
     final AuthenticationManager authenticationManager;
+    final ImageService imageService;
 
-    public AuthenticationResponse signup(SignUpRequest request) {
+    public AuthenticationResponse signup(SignUpRequest request) throws IOException {
+
+        if (userRepository.existsByUsername(request.getUsername())) {
+            return AuthenticationResponse.builder().response("Username already taken").build();
+        }
+
         var user = User
                 .builder()
                 .firstName(request.getFirstName())
@@ -40,7 +52,6 @@ public class AuthenticationService {
                 .age(request.getAge())
                 .height(request.getHeight())
                 .displayName(request.getDisplayName())
-                .profilePicture(request.getProfilePicture())
                 .contact(request.getContact())
                 .biography(request.getBiography())
                 .dislikes(request.getDislikes())
@@ -51,8 +62,14 @@ public class AuthenticationService {
                 .build();
 
         user = userService.save(user);
+
+        String username = user.getUsername();
+
+        MultipartFile profilePicture = request.getProfilePicture();
+        imageService.saveImageToStorage(username, "imageStorage", profilePicture);
+
         var jwt = jwtService.generateToken(user.getUsername());
-        return AuthenticationResponse.builder().token(jwt).build();
+        return AuthenticationResponse.builder().token(jwt).response("good to go").build();
     }
 
 

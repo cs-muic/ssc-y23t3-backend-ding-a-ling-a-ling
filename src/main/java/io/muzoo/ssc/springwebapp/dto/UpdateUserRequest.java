@@ -1,6 +1,7 @@
 package io.muzoo.ssc.springwebapp.dto;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Set;
 
@@ -18,7 +19,7 @@ public class UpdateUserRequest {
     int age;
     double height;
     String displayName;
-    String profilePicture;
+    MultipartFile profilePicture;
     String contact;
     String biography;;
     Set<String> dislikes;

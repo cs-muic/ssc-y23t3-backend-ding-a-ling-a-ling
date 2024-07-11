@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Set;
 
 @RestController
@@ -24,11 +26,8 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-
-    private final UserService userService;
-
     @PostMapping("/signup")
-    public AuthenticationResponse signup(@RequestBody SignUpRequest request) {
+    public AuthenticationResponse signup(@ModelAttribute SignUpRequest request) throws IOException {
         return authenticationService.signup(request);
     }
 

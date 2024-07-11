@@ -6,14 +6,18 @@ import io.muzoo.ssc.springwebapp.dto.UserDTO;
 import io.muzoo.ssc.springwebapp.models.User;
 import io.muzoo.ssc.springwebapp.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.query.sqm.mutation.internal.temptable.UpdateExecutionDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.IncorrectUpdateSemanticsDataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -24,6 +28,7 @@ public class UserService implements UserDetailsService{
     private final UserRepository userRepository;
     final PasswordEncoder passwordEncoder;
     final JwtService jwtService;
+    private final ImageService imageService;
 
     public UserDetails loadUserByUsername(String username) {
         return userRepository.findByUsername(username)
@@ -51,7 +56,6 @@ public class UserService implements UserDetailsService{
             profiles.append("Age: ").append(user.getAge()).append("\n");
             profiles.append("Height: ").append(user.getHeight()).append("\n");
             profiles.append("Display Name: ").append(user.getDisplayName()).append("\n");
-            profiles.append("Profile Picture: ").append(user.getProfilePicture()).append("\n");
             profiles.append("Contact: ").append(user.getContact()).append("\n");
             profiles.append("Biography: ").append(user.getBiography()).append("\n");
             profiles.append("Preferences: ").append(user.getPreferences()).append("\n");
@@ -69,7 +73,7 @@ public class UserService implements UserDetailsService{
     }
 
 
-    public String updateUser(UpdateUserRequest updateUserRequest) {
+    public String updateUser(UpdateUserRequest updateUserRequest) throws IOException {
         String token = updateUserRequest.getToken();
         if (updateUserRequest.getToken() == null) {
             return "Token is required";
@@ -88,11 +92,11 @@ public class UserService implements UserDetailsService{
         int age = updateUserRequest.getAge();
         double height = updateUserRequest.getHeight();
         String displayName = updateUserRequest.getDisplayName();
-        String profilePicture = updateUserRequest.getProfilePicture();
         String contact = updateUserRequest.getContact();
         String biography = updateUserRequest.getBiography();
         Set<String> dislikes = updateUserRequest.getDislikes();
         Set<String> preferences = updateUserRequest.getPreferences();
+        MultipartFile profileUser = updateUserRequest.getProfilePicture();
 
         if (firstName != null && !firstName.isBlank()) {
             user.setFirstName(firstName);
@@ -115,9 +119,6 @@ public class UserService implements UserDetailsService{
         if (displayName != null && !displayName.isBlank()) {
             user.setDisplayName(displayName);
         }
-        if (profilePicture != null && !profilePicture.isBlank()) {
-            user.setProfilePicture(profilePicture);
-        }
         if (contact != null && !contact.isBlank()) {
             user.setContact(contact);
         }
@@ -129,6 +130,11 @@ public class UserService implements UserDetailsService{
         }
         if (preferences != null && !preferences.isEmpty()) {
             user.setPreferences(preferences);
+        }
+
+        // save the profile in a seperate storage
+        if (profileUser != null && !profileUser.isEmpty()) {
+            imageService.saveImageToStorage(username, "imageStorage", profileUser);
         }
 
         userRepository.save(user);
@@ -147,12 +153,10 @@ public class UserService implements UserDetailsService{
         user.setAge(userDTO.getAge());
         user.setHeight(userDTO.getHeight());
         user.setDisplayName(userDTO.getDisplayName());
-        user.setProfilePicture(userDTO.getProfilePicture());
         user.setContact(userDTO.getContact());
         user.setBiography(userDTO.getBiography());
         user.setPreferences(userDTO.getPreferences());
         user.setDislikes(userDTO.getDislikes());
-
     }
 
     public User save(User newUser) {

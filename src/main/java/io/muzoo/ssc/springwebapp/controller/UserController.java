@@ -7,6 +7,9 @@ import io.muzoo.ssc.springwebapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -38,7 +41,7 @@ public class UserController {
 
     @PostMapping("/update") //TODO: can change the para, to restrict user to change stuff
     @PreAuthorize("hasRole('USER')")
-    public String updateUser(@RequestBody UpdateUserRequest updateUserRequest) {
+    public String updateUser(@RequestBody UpdateUserRequest updateUserRequest) throws IOException {
         return userService.updateUser(updateUserRequest);
     }
 
