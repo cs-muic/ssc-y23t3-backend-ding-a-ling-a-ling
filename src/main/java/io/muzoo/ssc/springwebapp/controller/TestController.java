@@ -1,7 +1,7 @@
 package io.muzoo.ssc.springwebapp.controller;
 
-import io.muzoo.ssc.springwebapp.dto.UpdateUserRequest;
 import io.muzoo.ssc.springwebapp.models.User;
+import io.muzoo.ssc.springwebapp.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;//package io.muzoo.ssc.springwebapp.controller;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -9,16 +9,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import io.muzoo.ssc.springwebapp.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Set;
+import java.io.IOException;
 
 
 @RestController
-@RequestMapping("/api/v1/test")
+@RequestMapping("/api/test")
 public class TestController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ImageService imageService;
 
     @GetMapping("/anon")
     public String anonEndPoint() {
@@ -26,9 +30,8 @@ public class TestController {
     }
 
     @GetMapping("/users")
-    @PreAuthorize("hasRole('USER')")
     public String usersEndPoint() {
-        return "ONLY users can see this";
+        return userService.getAllUsers();
     }
 
     @GetMapping("/admins")
@@ -49,5 +52,9 @@ public class TestController {
         return userService.getProfile(username);
     }
 
+    @PostMapping("/upload")
+    public String uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
+        return imageService.saveImageToStorage("test", file);
+    }
 
 }

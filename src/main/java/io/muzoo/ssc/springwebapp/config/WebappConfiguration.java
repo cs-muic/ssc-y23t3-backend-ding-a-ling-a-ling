@@ -10,11 +10,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Configuration
-@CrossOrigin(origins = "http://172.17.0.1:3000") // Adjust the allowed origin accordingly
+@CrossOrigin(origins = "http://localhost:3000") // Adjust the allowed origin accordingly
 
 public class WebappConfiguration {
 
-    @Value("${ssc.simple.service.url:http://172.17.0.1:3000}")
+    @Value("${ssc.simple.service.url:http://localhost:3000}")
     private String url;
 
     @Autowired
