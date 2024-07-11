@@ -2,6 +2,7 @@ package io.muzoo.ssc.springwebapp.controller;
 
 import io.muzoo.ssc.springwebapp.dto.UpdateUserRequest;
 import io.muzoo.ssc.springwebapp.models.User;
+import io.muzoo.ssc.springwebapp.service.ImageService;
 import io.muzoo.ssc.springwebapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,6 +13,10 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ImageService imageService;
+
 
     @GetMapping("/api/user/{id}")
     @PreAuthorize("hasRole('USER')")

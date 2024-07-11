@@ -163,4 +163,12 @@ public class UserService implements UserDetailsService{
         return userRepository.save(newUser);
     }
 
+    public String getAllUsers() {
+        StringBuilder allUsers = new StringBuilder();
+        for (User user : userRepository.findAll()) {
+            allUsers.append(user.getUsername()).append("\n");
+        }
+        return allUsers.toString();
+    }
+
 }
