@@ -1,6 +1,7 @@
 package io.muzoo.ssc.springwebapp.controller;
 
 import io.muzoo.ssc.springwebapp.dto.UpdateUserRequest;
+import io.muzoo.ssc.springwebapp.dto.UserDTO;
 import io.muzoo.ssc.springwebapp.models.User;
 import io.muzoo.ssc.springwebapp.service.ImageService;
 import io.muzoo.ssc.springwebapp.service.UserService;
@@ -9,6 +10,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/user")
@@ -44,6 +53,29 @@ public class UserController {
     public String updateUser(@ModelAttribute UpdateUserRequest updateUserRequest) throws IOException {
         return userService.updateUser(updateUserRequest);
     }
+
+    @GetMapping("/matches/")
+    public List<User> getMatchesByDislikes(@RequestParam("username") String username) {
+        return userService.findMatchesByUserDislikes(username);
+    }
+
+    @GetMapping("getimg/{username}")
+    public List<byte[]> getImages(@PathVariable String username) {
+        String uploadDirectory = "imageStorage";
+        List<byte[]> images = new ArrayList<>();
+        try {
+            Path userDirectory = Paths.get(uploadDirectory, username);
+            DirectoryStream<Path> directoryStream = Files.newDirectoryStream(userDirectory);
+            for (Path path : directoryStream) {
+                byte[] image = Files.readAllBytes(path);
+                images.add(image);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return images;
+    }
+
 
 
 }

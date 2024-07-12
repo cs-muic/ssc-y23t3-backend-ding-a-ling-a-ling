@@ -1,14 +1,10 @@
 package io.muzoo.ssc.springwebapp.service;
 
-import io.muzoo.ssc.springwebapp.dto.AuthenticationResponse;
 import io.muzoo.ssc.springwebapp.dto.UpdateUserRequest;
 import io.muzoo.ssc.springwebapp.dto.UserDTO;
 import io.muzoo.ssc.springwebapp.models.User;
 import io.muzoo.ssc.springwebapp.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.query.sqm.mutation.internal.temptable.UpdateExecutionDelegate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.IncorrectUpdateSemanticsDataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,11 +15,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService{
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     final PasswordEncoder passwordEncoder;
@@ -81,7 +78,7 @@ public class UserService implements UserDetailsService{
 
         String username = jwtService.extractUsername(token);
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        if (!jwtService.validateToken(token, user)){
+        if (!jwtService.validateToken(token, user)) {
             return "Token is invalid";
         }
         // change user info just the one that isn't black or null
@@ -174,5 +171,12 @@ public class UserService implements UserDetailsService{
         }
         return allUsers.toString();
     }
-
+    public List<User> findMatchesByUserDislikes(String username) {
+        // Find user by username
+        User user = userRepository.findByUsername(username).isEmpty() ? null : userRepository.findByUsername(username).get();
+        if (user == null) {
+            throw new RuntimeException("User not found with username: " + username);
+        }
+        return userRepository.findMatchesByDislikes(user.getId(), user.getDislikes());
+    }
 }

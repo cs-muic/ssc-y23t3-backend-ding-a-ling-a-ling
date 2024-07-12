@@ -9,6 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Objects;
 
@@ -16,7 +18,11 @@ import java.util.Objects;
 public class ImageService {
 
     public String saveImageToStorage(String username, String uploadDirectory, MultipartFile imageFile) throws IOException {
-        String uniqueFileName = username + "_" + System.currentTimeMillis();
+        System.out.println("current syste, currentTime" + ZonedDateTime.now());
+        ZonedDateTime now = ZonedDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmssSSS");
+//        String uniqueFileName = username + "_" + ZonedDateTime.now();
+        String uniqueFileName = username + "_" + now.format(formatter);
         System.out.println("the unique file name is " + uniqueFileName); // try check if this is working
 
         Path uploadPath = Path.of(uploadDirectory, username);
@@ -56,6 +62,15 @@ public class ImageService {
         }
     }
 
+    public byte[] getImageBytes(String username, String uploadDirectory, String imageName) throws IOException {
+        Path imagePath = Path.of(uploadDirectory, username, imageName);
+
+        if (Files.exists(imagePath)) {
+            return Files.readAllBytes(imagePath);
+        } else {
+            throw new IOException("Image file not found: " + imageName);
+        }
+    }
 
     private void deleteFile(Path path) {
         try {
@@ -77,6 +92,8 @@ public class ImageService {
             return null; // Handle missing images
         }
     }
+
+
 
     // Delete an image
     public String deleteImage(String imageDirectory, String imageName) throws IOException {

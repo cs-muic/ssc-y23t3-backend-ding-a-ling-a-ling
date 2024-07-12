@@ -53,7 +53,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/api/signup", "/api/signin").permitAll() // Allow POST to signup and signin
-                        .requestMatchers(HttpMethod.GET, "/api/test/**").permitAll()  // Other GET requests
+                        .requestMatchers(HttpMethod.GET, "/api/test/**", "/api/user/**").permitAll()  // Other GET requests
                         .requestMatchers(HttpMethod.POST, "/api/test/**").permitAll()
                         .anyRequest().authenticated()  // All other requests need authentication
                 )

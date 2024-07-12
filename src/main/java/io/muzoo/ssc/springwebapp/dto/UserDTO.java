@@ -24,5 +24,4 @@ public class UserDTO {
     private int age;
     private double height;
     private Set<String> preferences, dislikes;
-
 }
