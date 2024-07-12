@@ -54,28 +54,9 @@ public class UserController {
         return userService.updateUser(updateUserRequest);
     }
 
-    @GetMapping("/matches/")
+    @GetMapping("/matches")
     public List<User> getMatchesByDislikes(@RequestParam("username") String username) {
         return userService.findMatchesByUserDislikes(username);
     }
-
-    @GetMapping("getimg/{username}")
-    public List<byte[]> getImages(@PathVariable String username) {
-        String uploadDirectory = "imageStorage";
-        List<byte[]> images = new ArrayList<>();
-        try {
-            Path userDirectory = Paths.get(uploadDirectory, username);
-            DirectoryStream<Path> directoryStream = Files.newDirectoryStream(userDirectory);
-            for (Path path : directoryStream) {
-                byte[] image = Files.readAllBytes(path);
-                images.add(image);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return images;
-    }
-
-
-
 }
+

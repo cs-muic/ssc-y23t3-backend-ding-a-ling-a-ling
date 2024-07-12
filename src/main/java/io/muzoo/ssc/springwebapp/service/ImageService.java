@@ -81,7 +81,6 @@ public class ImageService {
         }
     }
 
-    // To view an image
     public byte[] getImage(String imageDirectory, String imageName) throws IOException {
         Path imagePath = Path.of(imageDirectory, imageName);
 
