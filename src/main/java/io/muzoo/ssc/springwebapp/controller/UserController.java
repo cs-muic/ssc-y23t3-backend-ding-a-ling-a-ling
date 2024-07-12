@@ -41,7 +41,7 @@ public class UserController {
 
     @PostMapping("/update") //TODO: can change the para, to restrict user to change stuff
     @PreAuthorize("hasRole('USER')")
-    public String updateUser(@RequestBody UpdateUserRequest updateUserRequest) throws IOException {
+    public String updateUser(@ModelAttribute UpdateUserRequest updateUserRequest) throws IOException {
         return userService.updateUser(updateUserRequest);
     }
 

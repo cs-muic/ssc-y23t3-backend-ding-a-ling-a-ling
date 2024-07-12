@@ -133,8 +133,8 @@ public class UserService implements UserDetailsService{
         }
 
         // save the profile in a seperate storage
-        if (profileUser != null && !profileUser.isEmpty()) {
-            imageService.saveImageToStorage(username, "imageStorage", profileUser);
+        if (profileUser != null) {
+            imageService.replaceImage(username, "imageStorage", profileUser);
         }
 
         userRepository.save(user);

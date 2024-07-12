@@ -1,22 +1,22 @@
 package io.muzoo.ssc.springwebapp.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Date;
+import java.util.Objects;
 
 @Service
 public class ImageService {
 
-    UserService userService;
-
-    // Save image in a local directory
     public String saveImageToStorage(String username, String uploadDirectory, MultipartFile imageFile) throws IOException {
-        String uniqueFileName = username + "_" + new Date().getTime();
+        String uniqueFileName = username + "_" + System.currentTimeMillis();
         System.out.println("the unique file name is " + uniqueFileName); // try check if this is working
 
         Path uploadPath = Path.of(uploadDirectory, username);
@@ -30,6 +30,40 @@ public class ImageService {
         Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
         return uniqueFileName;
+    }
+
+    public String replaceImage(String username, String uploadDirectory, MultipartFile replaceFile) {
+        if (replaceFile == null || replaceFile.isEmpty()) {
+            return "Failed: Replace file is null or empty";
+        }
+
+        String originalFileName = StringUtils.cleanPath(replaceFile.getOriginalFilename());
+        String uniqueFileName = username + "_" + System.currentTimeMillis() + "_" + originalFileName;
+        Path userDirectory = Paths.get(uploadDirectory, username);
+
+        try {
+            Files.list(userDirectory)
+                    .filter(Files::isRegularFile)
+                    .forEach(this::deleteFile);
+
+            Path filePath = userDirectory.resolve(originalFileName);
+            Files.copy(replaceFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            return uniqueFileName;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Failed: " + e.getMessage();
+        }
+    }
+
+
+    private void deleteFile(Path path) {
+        try {
+            Files.delete(path);
+        } catch (IOException e) {
+            System.err.println("Failed to delete file: " + path.toString());
+            e.printStackTrace();
+        }
     }
 
     // To view an image
