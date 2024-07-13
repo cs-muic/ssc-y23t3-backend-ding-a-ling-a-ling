@@ -1,9 +1,7 @@
 package io.muzoo.ssc.springwebapp.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Set;
 
@@ -11,6 +9,8 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
+@Getter
 public class SignUpRequest {
     String firstName;
     String lastName;
@@ -22,7 +22,7 @@ public class SignUpRequest {
     int age;
     double height;
     String displayName;
-    String profilePicture;
+    MultipartFile profilePicture;
     String contact;
     String biography;;
     Set<String> dislikes;
