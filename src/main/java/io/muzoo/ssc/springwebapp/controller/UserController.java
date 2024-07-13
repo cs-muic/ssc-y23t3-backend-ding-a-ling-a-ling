@@ -8,6 +8,7 @@ import io.muzoo.ssc.springwebapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -30,19 +31,19 @@ public class UserController {
     private ImageService imageService;
 
 
-    @GetMapping("/api/user/{id}")
+    @GetMapping("/user/{id}")
     @PreAuthorize("hasRole('USER')")
     public User getName(@PathVariable Long id) {
         return userService.getUser(id);
     }
 
-    @GetMapping("/api/search")
+    @GetMapping("/search")
     @PreAuthorize("hasRole('USER')")
     public User search(@RequestParam(required = false) String q) {
         return userService.search(q);
     }
 
-    @GetMapping("/api/profile/{username}")
+    @GetMapping("/profile/{username}")
     @PreAuthorize("hasRole('USER')")
     public String getProfile(@PathVariable String username) {
         return userService.getProfile(username);
@@ -58,5 +59,11 @@ public class UserController {
     public List<User> getMatchesByDislikes(@RequestParam("username") String username) {
         return userService.findMatchesByUserDislikes(username);
     }
+
+    @GetMapping("/image/{username}")
+    public String getImage(@PathVariable String username) throws IOException {
+        return imageService.getImage(username);
+    }
+
 }
 

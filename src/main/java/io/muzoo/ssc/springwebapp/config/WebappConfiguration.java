@@ -25,7 +25,6 @@ public class WebappConfiguration {
         SimpleService simpleService = new SimpleService();
         simpleService.setUserRepository(userRepository);
         simpleService.setUrl(url);
-        System.out.println("SimpleService is created. " + url   );
         return simpleService;
     }
 }

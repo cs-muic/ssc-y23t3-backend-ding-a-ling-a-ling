@@ -69,14 +69,4 @@ public class TestController {
         }
     }
 
-    @GetMapping("/getImage")
-    public byte[] getImage(@RequestParam("username") String username) throws IOException {
-
-        byte[] imageBytes = imageService.getImage(username);
-        if (imageBytes == null) {
-            return "?ayy lmao?".getBytes();
-        }
-        return imageBytes;
-    }
-
 }

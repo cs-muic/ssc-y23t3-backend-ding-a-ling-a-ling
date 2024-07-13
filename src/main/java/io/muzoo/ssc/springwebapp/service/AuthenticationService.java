@@ -77,8 +77,6 @@ public class AuthenticationService {
 
     public AuthenticationResponse signin(SignInRequest request) {
         try {
-            // Authenticating the user's credentials
-
             String password = request.getPassword();
             String email = request.getEmail();
 
