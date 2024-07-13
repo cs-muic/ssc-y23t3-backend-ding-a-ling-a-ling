@@ -66,10 +66,12 @@ public class AuthenticationService {
         String username = user.getUsername();
 
         MultipartFile profilePicture = request.getProfilePicture();
-        imageService.saveImageToStorage(username, "imageStorage", profilePicture);
+        if (!imageService.saveImageToStorage(username, profilePicture)){
+            return AuthenticationResponse.builder().response("User created but failed to save image").build();
+        }
 
         var jwt = jwtService.generateToken(user.getUsername());
-        return AuthenticationResponse.builder().token(jwt).response("good to go").build();
+        return AuthenticationResponse.builder().token(jwt).response("User successfully created!").build();
     }
 
 
@@ -92,7 +94,7 @@ public class AuthenticationService {
 
             return AuthenticationResponse.builder().token(jwt).build();
         } catch (AuthenticationException e) {
-            throw new IllegalArgumentException("Authentication failed", e);
+            return AuthenticationResponse.builder().response("Invalid email or password.").build();
         }
     }
 

@@ -129,9 +129,8 @@ public class UserService implements UserDetailsService {
             user.setPreferences(preferences);
         }
 
-        // save the profile in a seperate storage
         if (profileUser != null) {
-            imageService.replaceImage(username, "imageStorage", profileUser);
+            imageService.saveImageToStorage(username, profileUser);
         }
 
         userRepository.save(user);

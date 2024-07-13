@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController
@@ -60,8 +62,21 @@ public class TestController {
 
     @PostMapping("/imgTest")
     public String uploadImage(@RequestParam("file") MultipartFile file, @RequestParam("username") String username) throws IOException {
-        return imageService.saveImageToStorage(username,"imageStorage", file);
+        if (imageService.saveImageToStorage(username, file)){
+            return "Image uploaded successfully";
+        } else {
+            return "Failed to upload image";
+        }
     }
 
+    @GetMapping("/getImage")
+    public byte[] getImage(@RequestParam("username") String username) throws IOException {
+
+        byte[] imageBytes = imageService.getImage(username);
+        if (imageBytes == null) {
+            return "?ayy lmao?".getBytes();
+        }
+        return imageBytes;
+    }
 
 }
