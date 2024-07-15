@@ -69,6 +69,16 @@ public class UserService implements UserDetailsService {
         return String.format("Created user %s successfully", userDTO.getUsername());
     }
 
+    public String convertTokenToUsername(String token) {
+
+        String username = jwtService.extractUsername(token);
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if (!jwtService.validateToken(token, user)) {
+            return "invalid";
+        }
+
+        return username;
+    }
 
     public String updateUser(UpdateUserRequest updateUserRequest) throws IOException {
         String token = updateUserRequest.getToken();
@@ -76,11 +86,13 @@ public class UserService implements UserDetailsService {
             return "Token is required";
         }
 
-        String username = jwtService.extractUsername(token);
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        if (!jwtService.validateToken(token, user)) {
+        String username = convertTokenToUsername(token);
+        if (username.equalsIgnoreCase("invalid")) {
             return "Token is invalid";
         }
+
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
         // change user info just the one that isn't black or null
         String firstName = updateUserRequest.getFirstName();
         String lastName = updateUserRequest.getLastName();
@@ -170,9 +182,11 @@ public class UserService implements UserDetailsService {
         }
         return allUsers.toString();
     }
-    public List<User> findMatchesByUserDislikes(String username) {
-        // Find user by username
+    public List<User> findMatchesByToken(String token) {
+        String username = convertTokenToUsername(token);
+
         User user = userRepository.findByUsername(username).isEmpty() ? null : userRepository.findByUsername(username).get();
+
         if (user == null) {
             throw new RuntimeException("User not found with username: " + username);
         }

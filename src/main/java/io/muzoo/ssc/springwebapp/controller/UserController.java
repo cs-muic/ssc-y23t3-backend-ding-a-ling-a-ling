@@ -56,8 +56,8 @@ public class UserController {
     }
 
     @GetMapping("/matches")
-    public List<User> getMatchesByDislikes(@RequestParam("username") String username) {
-        return userService.findMatchesByUserDislikes(username);
+    public List<User> getMatchesByDislikes(@RequestParam("token") String token) {
+        return userService.findMatchesByToken(token);
     }
 
     @GetMapping("/image/{username}")
