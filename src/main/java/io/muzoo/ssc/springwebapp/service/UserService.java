@@ -35,14 +35,6 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    public User getUser(Long id) {
-        return userRepository.findById(id).orElse(null);
-    }
-
-    public User search(String username) {
-        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    }
-
     public String getProfile(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         if (user != null) {
@@ -207,6 +199,15 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         ArrayList<String> preferencesList = new ArrayList<>(user.getPreferences());
         return preferencesList;
+    }
+
+    public boolean deleteUser(String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user != null) {
+            userRepository.delete(user);
+            return true;
+        }
+        return false;
     }
 
 }

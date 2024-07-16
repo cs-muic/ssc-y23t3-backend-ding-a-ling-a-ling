@@ -21,7 +21,6 @@ public class TestController {
 
     @Autowired
     private UserService userService;
-
     @Autowired
     private ImageService imageService;
     @Autowired
@@ -57,6 +56,15 @@ public class TestController {
             return "Image uploaded successfully";
         } else {
             return "Failed to upload image";
+        }
+    }
+
+    @PostMapping("/delete")
+    public String delete(@RequestParam("username") String username) {
+        if (userService.deleteUser(username)){
+            return "User deleted successfully";
+        } else {
+            return "Failed to delete user";
         }
     }
 
