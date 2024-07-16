@@ -32,7 +32,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signin")
-    public AuthenticationResponse signin(@RequestBody SignInRequest request) {
+    public AuthenticationResponse signin(@ModelAttribute SignInRequest request) {
         return authenticationService.signin(request);
     }
 

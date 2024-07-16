@@ -5,6 +5,7 @@ import io.muzoo.ssc.springwebapp.dto.UserDTO;
 import io.muzoo.ssc.springwebapp.models.User;
 import io.muzoo.ssc.springwebapp.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.boot.jaxb.cfg.spi.JaxbCfgEventListenerGroupType;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -167,13 +170,6 @@ public class UserService implements UserDetailsService {
         user.setDislikes(userDTO.getDislikes());
     }
 
-    public User save(User newUser) {
-        if (newUser.getId() == null) {
-            newUser.setCreatedAt(LocalDateTime.now());
-        }
-        newUser.setUpdatedAt(LocalDateTime.now());
-        return userRepository.save(newUser);
-    }
 
     public String getAllUsers() {
         StringBuilder allUsers = new StringBuilder();
@@ -182,14 +178,35 @@ public class UserService implements UserDetailsService {
         }
         return allUsers.toString();
     }
+
     public List<User> findMatchesByToken(String token) {
         String username = convertTokenToUsername(token);
 
-        User user = userRepository.findByUsername(username).isEmpty() ? null : userRepository.findByUsername(username).get();
+//        UserDTO user = userRepository.findByUsername(username).isEmpty() ? null : userRepository.findByUsername(username).get();
+
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         if (user == null) {
             throw new RuntimeException("User not found with username: " + username);
         }
-        return userRepository.findMatchesByDislikes(user.getId(), user.getDislikes());
+
+        List<User> users = userRepository.findUsersByDislikesAndPreferences(user.getDislikes(), user.getPreferences());
+
+        return userRepository.findUsersByDislikesAndPreferences(user.getDislikes(), user.getPreferences());
     }
+
+    public List<String> getUserDislikes(String token){
+        String username = convertTokenToUsername(token);
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        ArrayList<String> dislikesList = new ArrayList<>(user.getDislikes());
+        return dislikesList;
+    }
+
+    public List<String> getUserPreferences(String token){
+        String username = convertTokenToUsername(token);
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        ArrayList<String> preferencesList = new ArrayList<>(user.getPreferences());
+        return preferencesList;
+    }
+
 }

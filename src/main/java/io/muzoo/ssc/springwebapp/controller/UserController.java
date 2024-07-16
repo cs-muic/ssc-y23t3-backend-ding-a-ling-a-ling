@@ -26,28 +26,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
     @Autowired
     private ImageService imageService;
-
-
-    @GetMapping("/user/{id}")
-    @PreAuthorize("hasRole('USER')")
-    public User getName(@PathVariable Long id) {
-        return userService.getUser(id);
-    }
-
-    @GetMapping("/search")
-    @PreAuthorize("hasRole('USER')")
-    public User search(@RequestParam(required = false) String q) {
-        return userService.search(q);
-    }
-
-    @GetMapping("/profile/{username}")
-    @PreAuthorize("hasRole('USER')")
-    public String getProfile(@PathVariable String username) {
-        return userService.getProfile(username);
-    }
 
     @PostMapping("/update") //TODO: can change the para, to restrict user to change stuff
     @PreAuthorize("hasRole('USER')")
@@ -63,6 +43,16 @@ public class UserController {
     @GetMapping("/image/{username}")
     public String getImage(@PathVariable String username) throws IOException {
         return imageService.getImage(username);
+    }
+
+    @GetMapping("/preferences")
+    public List<String> userPref(@RequestParam("token") String token) {
+        return userService.getUserPreferences(token);
+    }
+
+    @GetMapping("/dislikes")
+    public List<String> userDislikes(@RequestParam("token") String token) {
+        return userService.getUserDislikes(token);
     }
 
 }

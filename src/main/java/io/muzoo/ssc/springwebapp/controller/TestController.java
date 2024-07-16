@@ -4,8 +4,7 @@ import io.muzoo.ssc.springwebapp.models.User;
 import io.muzoo.ssc.springwebapp.repositories.UserRepository;
 import io.muzoo.ssc.springwebapp.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.GetMapping;//package io.muzoo.ssc.springwebapp.controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import io.muzoo.ssc.springwebapp.service.UserService;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @RestController
@@ -46,12 +43,6 @@ public class TestController {
     @PreAuthorize("hasRole('ADMIN')")
     public String adminsEndPoint() {
         return "ONLY admins can see this";
-    }
-
-    @GetMapping("/search")
-    @PreAuthorize("hasRole('USER')")
-    public User search(@RequestParam(required = false) String q) {
-        return userService.search(q);
     }
 
     @GetMapping("/profile/{username}")
