@@ -145,7 +145,6 @@ public class UserService implements UserDetailsService {
     }
 
     private void setUserInfo(User user, UserDTO userDTO) {
-
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
         user.setAddress(userDTO.getAddress());
@@ -160,6 +159,9 @@ public class UserService implements UserDetailsService {
         user.setBiography(userDTO.getBiography());
         user.setPreferences(userDTO.getPreferences());
         user.setDislikes(userDTO.getDislikes());
+        user.setRole(userDTO.getRole());
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
     }
 
 

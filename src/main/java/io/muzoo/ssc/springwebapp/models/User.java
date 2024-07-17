@@ -20,6 +20,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @ToString
+@Builder
 public class User implements UserDetails {
 
     @Id

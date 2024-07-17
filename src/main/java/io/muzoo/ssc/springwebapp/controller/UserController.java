@@ -30,7 +30,6 @@ public class UserController {
     private ImageService imageService;
 
     @PostMapping("/update") //TODO: can change the para, to restrict user to change stuff
-    @PreAuthorize("hasRole('USER')")
     public String updateUser(@ModelAttribute UpdateUserRequest updateUserRequest) throws IOException {
         return userService.updateUser(updateUserRequest);
     }
@@ -40,8 +39,8 @@ public class UserController {
         return userService.findMatchesByToken(token);
     }
 
-    @GetMapping("/image/{username}")
-    public String getImage(@PathVariable String username) throws IOException {
+    @GetMapping("/image")
+    public String getImage(@RequestParam String username) throws IOException {
         return imageService.getImage(username);
     }
 
