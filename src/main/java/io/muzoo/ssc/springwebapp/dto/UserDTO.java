@@ -25,7 +25,6 @@ public class UserDTO {
             lastName, displayName,
             contact, phoneNumber, biography;
 
-    private String profilePicture;
     private int age;
     private double height;
     private Set<String> preferences, dislikes;

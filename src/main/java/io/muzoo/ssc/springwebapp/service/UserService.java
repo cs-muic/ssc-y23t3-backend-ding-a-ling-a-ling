@@ -46,7 +46,6 @@ public class UserService implements UserDetailsService {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .phoneNumber(user.getPhoneNumber())
-                .profilePicture(imageService.getImage(username))
                 .age(user.getAge())
                 .height(user.getHeight())
                 .displayName(user.getDisplayName())
