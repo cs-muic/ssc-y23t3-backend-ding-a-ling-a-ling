@@ -5,13 +5,9 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Setter
 @Getter
@@ -72,6 +68,9 @@ public class User implements UserDetails {
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
 
+
+    @ManyToMany(cascade=CascadeType.ALL)
+    private List<User> matches = new ArrayList<>();
 
     @ElementCollection
 //    @CollectionTable(name = "join_user_preferences", joinColumns = @JoinColumn(name = "user_id"))

@@ -174,26 +174,7 @@ public class UserService implements UserDetailsService {
         return allUsers.toString();
     }
 
-//    public List<User> findMatchesByToken(String token) {
-//        String username = convertTokenToUsername(token);
-//        System.out.println("username" + username);
-//
-////        UserDTO user = userRepository.findByUsername(username).isEmpty() ? null : userRepository.findByUsername(username).get();
-//
-//        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-//
-//        System.out.println("Nice");
-//
-//        if (user == null) {
-//            throw new RuntimeException("User not found with username: " + username);
-//        }
-//
-//        Optional<List<User>> users = userRepository.findMatchesByDislikes(user.getPreferences(), user.getDislikes());
-//
-//        return users.orElse(new ArrayList<>());
-//    }
-
-    public List<User> findMatchesByToken(String token) {
+    public UserDTO getMatchByTokenAndIndex(String token, int index) {
         String username = convertTokenToUsername(token);
 
         User user = userRepository.findByUsername(username).isEmpty() ? null : userRepository.findByUsername(username).get();
@@ -201,8 +182,46 @@ public class UserService implements UserDetailsService {
         if (user == null) {
             throw new RuntimeException("User not found with username: " + username);
         }
-        return userRepository.findMatchesByDislikes(user.getId(), user.getDislikes());
+
+        if (index < 0 || index >= user.getMatches().size()) {
+            throw new RuntimeException("Index out of bounds");
+        }
+
+        User theMatch = user.getMatches().get(index);
+
+        UserDTO matchDTO = new UserDTO();
+
+        setUserInfo(theMatch, matchDTO);
+
+        return matchDTO;
+
     }
+
+    public Integer findAmtMatchesByToken(String token) {
+        String username = convertTokenToUsername(token);
+
+        User user = userRepository.findByUsername(username).isEmpty() ? null : userRepository.findByUsername(username).get();
+
+        if (user == null) {
+            throw new RuntimeException("User not found with username: " + username);
+        }
+
+        List<User> matchesByPreferences = userRepository.findMatchesByPreferences(user.getId(), user.getPreferences());
+        List<User> matchesByDislikes = userRepository.findMatchesByDislikes(user.getId(), user.getDislikes());
+
+        List<User> allMatches = new ArrayList<>();
+        for (User match : matchesByDislikes) {
+            if (matchesByPreferences.contains(match)) {
+                allMatches.add(match);
+            }
+        }
+
+        user.setMatches(allMatches);
+
+        return allMatches.size();
+    }
+
+
 
     public List<String> getUserDislikes(String token){
         String username = convertTokenToUsername(token);

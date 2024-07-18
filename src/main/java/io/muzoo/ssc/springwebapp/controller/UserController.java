@@ -48,10 +48,18 @@ public class UserController {
         return userService.updateUser(updateUserRequest);
     }
 
-    @GetMapping("/matches")
-    public List<User> getMatchesByDislikes(@RequestParam("token") String token) {
-        return userService.findMatchesByToken(token);
+    //    get the matches according to the index
+    @GetMapping("/matchebyindex")
+    public UserDTO getMatchByTokenAndIndex(@RequestParam("token") String token, @RequestParam("index") int index){
+        return userService.getMatchByTokenAndIndex(token, index);
     }
+
+    //    get the amount of the matches
+    @GetMapping("/matches/amount")
+    public int getMatchesAmount(@RequestParam("token") String token) {
+        return userService.findAmtMatchesByToken(token);
+    }
+
 
     @GetMapping("/preferences")
     public List<String> userPref(@RequestParam("token") String token) {
