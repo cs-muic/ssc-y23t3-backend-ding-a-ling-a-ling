@@ -29,7 +29,7 @@ public class UserController {
     @Autowired
     private ImageService imageService;
 
-    @PostMapping("/update") //TODO: can change the para, to restrict user to change stuff
+    @PostMapping("/update")
     public String updateUser(@ModelAttribute UpdateUserRequest updateUserRequest) throws IOException {
         return userService.updateUser(updateUserRequest);
     }
@@ -40,6 +40,7 @@ public class UserController {
     }
 
     @GetMapping("/image")
+    @PreAuthorize("hasRole('USER')")
     public String getImage(@RequestParam String username) throws IOException {
         return imageService.getImage(username);
     }

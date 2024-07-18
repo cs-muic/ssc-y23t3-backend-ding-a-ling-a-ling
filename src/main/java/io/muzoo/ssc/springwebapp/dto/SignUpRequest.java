@@ -17,7 +17,7 @@ public class SignUpRequest {
     String email;
     String password;
     String username;
-    String Address;
+    String address;
     String phoneNumber;
     int age;
     double height;
@@ -27,5 +27,4 @@ public class SignUpRequest {
     String biography;;
     Set<String> dislikes;
     Set<String> preferences;
-
 }

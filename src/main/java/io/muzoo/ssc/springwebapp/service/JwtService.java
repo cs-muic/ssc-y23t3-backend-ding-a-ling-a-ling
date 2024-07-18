@@ -17,10 +17,10 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class JwtService {
 
     @Value("${token.secret.key}")
-    private final String SECRET = "0d332990f9689b5d2a489c7e9d09705fcffcae5bb5e773b3c2f0ba7be10b7dfa"; // Replace with a secure secret key
+    String SECRET;
 
     @Value("${token.expirationms}")
-    private final long EXPIRATION_TIME = 900_000; // 15 minutes
+    long EXPIRATION_TIME;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);

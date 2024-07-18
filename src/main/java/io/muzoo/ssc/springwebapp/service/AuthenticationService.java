@@ -81,23 +81,27 @@ public class AuthenticationService {
     public AuthenticationResponse signin(SignInRequest request) {
         try {
             String password = request.getPassword();
-            String email = request.getEmail();
+            String username = request.getUsername();
 
-            User user = userRepository.findByEmail(email).orElse(null);
+            System.out.println("username:" + username);
+
+
+            User user = userRepository.findByUsername(username).orElse(null);
 
             if (user == null) {
-                return AuthenticationResponse.builder().response("Invalid email or password.").build();
+                return AuthenticationResponse.builder().response("Invalid username.").build();
             }
 
             if (!passwordEncoder.matches(password, user.getPassword())) {
-                return AuthenticationResponse.builder().response("Invalid email or password.").build();
+                return AuthenticationResponse.builder().response("Wrong password.").build();
             }
 
             var jwt = jwtService.generateToken(user.getUsername());
 
-            return AuthenticationResponse.builder().token(jwt).build();
+            return AuthenticationResponse.builder().token(jwt).response("successfully changed").build();
 
         } catch (AuthenticationException e) {
+
             return AuthenticationResponse.builder().response("Invalid email or password.").build();
         }
 

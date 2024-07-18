@@ -186,7 +186,7 @@ public class UserService implements UserDetailsService {
 
         List<User> users = userRepository.findUsersByDislikesAndPreferences(user.getDislikes(), user.getPreferences());
 
-        return userRepository.findUsersByDislikesAndPreferences(user.getDislikes(), user.getPreferences());
+        return users;
     }
 
     public List<String> getUserDislikes(String token){
