@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+//    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
@@ -49,10 +50,14 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/api/signup", "/api/signin", "/api/user/**").permitAll() // Allow POST to signup and signin
+                        .requestMatchers(HttpMethod.POST, "/api/signup", "/api/signin").permitAll() // Allow POST to signup and signin
+                        .requestMatchers(HttpMethod.GET, "/api/test/**").permitAll()  // Other GET requests
+                        .requestMatchers(HttpMethod.POST, "/api/test/**").permitAll()
                         .anyRequest().authenticated()  // All other requests need authentication
                 )
                 .authenticationProvider(authenticationProvider());
+//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
