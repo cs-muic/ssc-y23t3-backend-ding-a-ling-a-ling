@@ -63,18 +63,5 @@ public class TestController {
         }
     }
 
-    @GetMapping("/images")
-    public ResponseEntity<String> getImage(@RequestParam("username") String username) {
-        try {
-            String base64Image = imageService.getImage(username);
-            if (base64Image != null) {
-                return ResponseEntity.ok().body(base64Image);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
 
 }
