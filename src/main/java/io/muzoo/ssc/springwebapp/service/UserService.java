@@ -1,11 +1,13 @@
 package io.muzoo.ssc.springwebapp.service;
 
+import io.muzoo.ssc.springwebapp.SpringWebappApplication;
 import io.muzoo.ssc.springwebapp.dto.UpdateUserRequest;
 import io.muzoo.ssc.springwebapp.dto.UserDTO;
 import io.muzoo.ssc.springwebapp.models.User;
 import io.muzoo.ssc.springwebapp.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.boot.jaxb.cfg.spi.JaxbCfgEventListenerGroupType;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,10 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +28,8 @@ public class UserService implements UserDetailsService {
     final PasswordEncoder passwordEncoder;
     final JwtService jwtService;
     private final ImageService imageService;
+    private final SpringWebappApplication springWebappApplication;
+    private final DataSourceTransactionManagerAutoConfiguration dataSourceTransactionManagerAutoConfiguration;
 
     public UserDetails loadUserByUsername(String username) {
         return userRepository.findByUsername(username)
@@ -67,10 +68,11 @@ public class UserService implements UserDetailsService {
     public String convertTokenToUsername(String token) {
 
         String username = jwtService.extractUsername(token);
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        if (!jwtService.validateToken(token, user)) {
-            return "invalid";
-        }
+        System.out.println("username " + username);
+//        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+//        if (!jwtService.validateToken(token, user)) {
+//            return "invalid";
+//        }
 
         return username;
     }
@@ -164,7 +166,6 @@ public class UserService implements UserDetailsService {
         user.setUpdatedAt(LocalDateTime.now());
     }
 
-
     public String getAllUsers() {
         StringBuilder allUsers = new StringBuilder();
         for (User user : userRepository.findAll()) {
@@ -173,20 +174,34 @@ public class UserService implements UserDetailsService {
         return allUsers.toString();
     }
 
+//    public List<User> findMatchesByToken(String token) {
+//        String username = convertTokenToUsername(token);
+//        System.out.println("username" + username);
+//
+////        UserDTO user = userRepository.findByUsername(username).isEmpty() ? null : userRepository.findByUsername(username).get();
+//
+//        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+//
+//        System.out.println("Nice");
+//
+//        if (user == null) {
+//            throw new RuntimeException("User not found with username: " + username);
+//        }
+//
+//        Optional<List<User>> users = userRepository.findMatchesByDislikes(user.getPreferences(), user.getDislikes());
+//
+//        return users.orElse(new ArrayList<>());
+//    }
+
     public List<User> findMatchesByToken(String token) {
         String username = convertTokenToUsername(token);
 
-//        UserDTO user = userRepository.findByUsername(username).isEmpty() ? null : userRepository.findByUsername(username).get();
-
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User user = userRepository.findByUsername(username).isEmpty() ? null : userRepository.findByUsername(username).get();
 
         if (user == null) {
             throw new RuntimeException("User not found with username: " + username);
         }
-
-        List<User> users = userRepository.findUsersByDislikesAndPreferences(user.getDislikes(), user.getPreferences());
-
-        return users;
+        return userRepository.findMatchesByDislikes(user.getId(), user.getDislikes());
     }
 
     public List<String> getUserDislikes(String token){

@@ -2,6 +2,7 @@ package io.muzoo.ssc.springwebapp.config;
 
 
 import io.muzoo.ssc.springwebapp.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -25,8 +26,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-//    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
     private final UserService userService;
+
     private final PasswordEncoder passwordEncoder;
 
     @Bean

@@ -75,12 +75,12 @@ public class User implements UserDetails {
 
     @ElementCollection
 //    @CollectionTable(name = "join_user_preferences", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "preference")
+    @Column(name = "preferences")
     private Set<String> preferences = new HashSet<>();
 
     @ElementCollection
 //    @CollectionTable(name = "join_user_dislikes", joinColumns = @JoinColumn(name = "dislike"))
-    @Column(name = "dislike")
+    @Column(name = "dislikes")
     private Set<String> dislikes = new HashSet<>();
 
     @Override
