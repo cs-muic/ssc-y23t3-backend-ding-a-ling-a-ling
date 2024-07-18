@@ -1,9 +1,10 @@
 package io.muzoo.ssc.springwebapp.controller;
 
-import io.muzoo.ssc.springwebapp.models.User;
 import io.muzoo.ssc.springwebapp.repositories.UserRepository;
 import io.muzoo.ssc.springwebapp.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -59,6 +60,20 @@ public class TestController {
             return "User deleted successfully";
         } else {
             return "Failed to delete user";
+        }
+    }
+
+    @GetMapping("/images")
+    public ResponseEntity<String> getImage(@RequestParam("username") String username) {
+        try {
+            String base64Image = imageService.getImage(username);
+            if (base64Image != null) {
+                return ResponseEntity.ok().body(base64Image);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
