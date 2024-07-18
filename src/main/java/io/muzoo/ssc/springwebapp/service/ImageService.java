@@ -36,7 +36,6 @@ public class ImageService {
 
     // To view an image
     public String getImage(String username) throws IOException {
-        System.out.println("checkign");
         Path uploadPath = Path.of("imageStorage");
         String filename = username + ".jpg";
         Path filePath = uploadPath.resolve(filename);

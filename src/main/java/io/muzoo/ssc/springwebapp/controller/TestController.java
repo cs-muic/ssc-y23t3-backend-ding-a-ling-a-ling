@@ -44,12 +44,6 @@ public class TestController {
         return "ONLY admins can see this";
     }
 
-    @GetMapping("/profile/{username}")
-    @PreAuthorize("hasRole('USER')")
-    public String getProfile(@PathVariable String username) {
-        return userService.getProfile(username);
-    }
-
     @PostMapping("/imgTest")
     public String uploadImage(@RequestParam("file") MultipartFile file, @RequestParam("username") String username) throws IOException {
         if (imageService.saveImageToStorage(username, file)){

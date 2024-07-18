@@ -35,26 +35,26 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    public String getProfile(String username) {
+    public UserDTO getProfile(String username) throws IOException {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        if (user != null) {
-            StringBuilder profiles = new StringBuilder();
-            profiles.append("Username: ").append(user.getUsername()).append("\n");
-            profiles.append("Email: ").append(user.getEmail()).append("\n");
-            profiles.append("Address: ").append(user.getAddress()).append("\n");
-            profiles.append("First Name: ").append(user.getFirstName()).append("\n");
-            profiles.append("Last Name: ").append(user.getLastName()).append("\n");
-            profiles.append("Phone Number: ").append(user.getPhoneNumber()).append("\n");
-            profiles.append("Age: ").append(user.getAge()).append("\n");
-            profiles.append("Height: ").append(user.getHeight()).append("\n");
-            profiles.append("Display Name: ").append(user.getDisplayName()).append("\n");
-            profiles.append("Contact: ").append(user.getContact()).append("\n");
-            profiles.append("Biography: ").append(user.getBiography()).append("\n");
-            profiles.append("Preferences: ").append(user.getPreferences()).append("\n");
-            profiles.append("Dislikes: ").append(user.getDislikes()).append("\n");
-            return profiles.toString();
-        }
-        return null;
+
+        UserDTO userDTO = UserDTO.builder()
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .address(user.getAddress())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .phoneNumber(user.getPhoneNumber())
+                .profilePicture(imageService.getImage(username))
+                .age(user.getAge())
+                .height(user.getHeight())
+                .displayName(user.getDisplayName())
+                .contact(user.getContact())
+                .biography(user.getBiography())
+                .dislikes(user.getDislikes())
+                .preferences(user.getPreferences())
+                .build();
+        return userDTO;
     }
 
     public String createUser(UserDTO userDTO) {

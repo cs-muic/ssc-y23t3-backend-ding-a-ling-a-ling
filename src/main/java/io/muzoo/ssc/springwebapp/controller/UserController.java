@@ -29,6 +29,15 @@ public class UserController {
     @Autowired
     private ImageService imageService;
 
+    @PostMapping("/profile")
+    public UserDTO getProfile(@RequestParam("username") String username) {
+        try {
+            return userService.getProfile(username);
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
     @PostMapping("/update")
     public String updateUser(@ModelAttribute UpdateUserRequest updateUserRequest) throws IOException {
         return userService.updateUser(updateUserRequest);
