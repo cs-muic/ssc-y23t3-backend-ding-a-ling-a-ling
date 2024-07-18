@@ -40,7 +40,6 @@ public class UserController {
     }
 
     @GetMapping("/image")
-    @PreAuthorize("hasRole('USER')")
     public String getImage(@RequestParam String username) throws IOException {
         return imageService.getImage(username);
     }
