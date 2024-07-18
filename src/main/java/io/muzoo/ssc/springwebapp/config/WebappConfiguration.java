@@ -18,9 +18,6 @@ public class WebappConfiguration {
     @Value("${ssc.simple.service.url:http://172.17.0.1:3000}")
     private String url;
 
-    @Autowired
-    private UserRepository userRepository;
-
     @Bean
     public SimpleService createSimpleService(UserRepository userRepository) {
         SimpleService simpleService = new SimpleService();

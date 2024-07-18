@@ -5,7 +5,6 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -39,7 +38,6 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    // Personal Details
     @Column(name = "first_name")
     private String firstName;
 
@@ -53,17 +51,15 @@ public class User implements UserDetails {
     @Column(name = "height_in_cm")
     private double height;
 
-    // Initial Dating Profile
     @Column(name = "display_name")
     private String displayName;
 
     @Column(name = "contact_number")
     private String contact;
 
-    @Column(length = 5000) // A longer field for a biography
+    @Column(length = 5000)
     private String biography;
 
-    // create the roles for the user
     @Enumerated(EnumType.STRING)
     Role role;
     LocalDateTime createdAt;
