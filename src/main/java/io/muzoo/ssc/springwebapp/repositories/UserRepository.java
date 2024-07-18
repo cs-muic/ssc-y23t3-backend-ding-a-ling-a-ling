@@ -20,7 +20,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Boolean existsByEmail(String email);
 
     @Query("SELECT u FROM User u WHERE u.id <> :userId AND u.id IN " +
-            "(SELECT u2.id FROM User u2 JOIN u2.dislikes d WHERE d IN :preferences)")
+            "(SELECT u2.id FROM User u2 JOIN u2.preferences d WHERE d IN :preferences)")
     List<User> findMatchesByPreferences(@Param("userId") Long userId, @Param("preferences") Set<String> preferences);
 
 

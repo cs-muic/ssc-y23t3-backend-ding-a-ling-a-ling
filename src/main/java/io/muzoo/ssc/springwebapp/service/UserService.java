@@ -54,26 +54,16 @@ public class UserService implements UserDetailsService {
                 .biography(user.getBiography())
                 .dislikes(user.getDislikes())
                 .preferences(user.getPreferences())
+                .matches(new ArrayList<>())
                 .build();
         return userDTO;
     }
 
-    public String createUser(UserDTO userDTO) {
-        User user = new User();
-        setUserInfo(user, userDTO);
-        userRepository.save(user);
-        return String.format("Created user %s successfully", userDTO.getUsername());
-    }
-
     public String convertTokenToUsername(String token) {
-
         String username = jwtService.extractUsername(token);
-        System.out.println("username " + username);
-//        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-//        if (!jwtService.validateToken(token, user)) {
-//            return "invalid";
-//        }
-
+        if (username == null) {
+            return "invalid";
+        }
         return username;
     }
 
@@ -146,26 +136,6 @@ public class UserService implements UserDetailsService {
         return String.format("Updated user %s successfully", user.getUsername());
     }
 
-    private void setUserInfo(User user, UserDTO userDTO) {
-        user.setUsername(userDTO.getUsername());
-        user.setEmail(userDTO.getEmail());
-        user.setAddress(userDTO.getAddress());
-        user.setFirstName(userDTO.getFirstName());
-        user.setLastName(userDTO.getLastName());
-        user.setPhoneNumber(userDTO.getPhoneNumber());
-        user.setPassword(userDTO.getPassword());
-        user.setAge(userDTO.getAge());
-        user.setHeight(userDTO.getHeight());
-        user.setDisplayName(userDTO.getDisplayName());
-        user.setContact(userDTO.getContact());
-        user.setBiography(userDTO.getBiography());
-        user.setPreferences(userDTO.getPreferences());
-        user.setDislikes(userDTO.getDislikes());
-        user.setRole(userDTO.getRole());
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
-    }
-
     public String getAllUsers() {
         StringBuilder allUsers = new StringBuilder();
         for (User user : userRepository.findAll()) {
@@ -174,14 +144,16 @@ public class UserService implements UserDetailsService {
         return allUsers.toString();
     }
 
-    public UserDTO getMatchByTokenAndIndex(String token, int index) {
+    public UserDTO getMatchByTokenAndIndex(String token, int index) throws IOException {
         String username = convertTokenToUsername(token);
 
-        User user = userRepository.findByUsername(username).isEmpty() ? null : userRepository.findByUsername(username).get();
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         if (user == null) {
             throw new RuntimeException("User not found with username: " + username);
         }
+        System.out.println("Matches size: " + user.getMatches().size());
+        System.out.println("index: " + index);
 
         if (index < 0 || index >= user.getMatches().size()) {
             throw new RuntimeException("Index out of bounds");
@@ -189,11 +161,7 @@ public class UserService implements UserDetailsService {
 
         User theMatch = user.getMatches().get(index);
 
-        UserDTO matchDTO = new UserDTO();
-
-        setUserInfo(theMatch, matchDTO);
-
-        return matchDTO;
+        return getProfile(theMatch.getUsername());
 
     }
 
@@ -209,19 +177,19 @@ public class UserService implements UserDetailsService {
         List<User> matchesByPreferences = userRepository.findMatchesByPreferences(user.getId(), user.getPreferences());
         List<User> matchesByDislikes = userRepository.findMatchesByDislikes(user.getId(), user.getDislikes());
 
-        List<User> allMatches = new ArrayList<>();
+        ArrayList<User> allMatches = new ArrayList<>();
         for (User match : matchesByDislikes) {
             if (matchesByPreferences.contains(match)) {
+                System.out.println("Match: " + match.getUsername());
                 allMatches.add(match);
             }
         }
 
         user.setMatches(allMatches);
+        userRepository.save(user);
 
         return allMatches.size();
     }
-
-
 
     public List<String> getUserDislikes(String token){
         String username = convertTokenToUsername(token);

@@ -37,14 +37,14 @@ public class AuthenticationService {
     public AuthenticationResponse signup(SignUpRequest request) throws IOException {
 
         if (userRepository.existsByUsername(request.getUsername())) {
-            System.out.println("username:" + request.getUsername());
             return AuthenticationResponse.builder().response("Username already taken").build();
         }
         if (userRepository.existsByEmail(request.getEmail())) {
             return AuthenticationResponse.builder().response("Email already taken").build();
         }
-
-        var user = UserDTO
+        //[rint the request
+        System.out.println(request);
+        var user = User
                 .builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
@@ -63,8 +63,7 @@ public class AuthenticationService {
                 .role(Role.ROLE_USER)
                 .build();
 
-        userService.createUser(user);
-
+        userRepository.save(user);
         String username = user.getUsername();
 
         MultipartFile profilePicture = request.getProfilePicture();
