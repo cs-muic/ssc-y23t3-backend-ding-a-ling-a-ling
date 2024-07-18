@@ -20,7 +20,7 @@ public class ImageService {
         }
         String uniqueFileName = username + ".jpg";
 
-        Path uploadPath = Path.of("imageStorage");
+        Path uploadPath = Path.of("../imageStorage");
         Path filePath = uploadPath.resolve(uniqueFileName);
 
         if (!Files.exists(uploadPath)) {
@@ -34,7 +34,7 @@ public class ImageService {
 
     // To view an image
     public String getImage(String username) throws IOException {
-        Path uploadPath = Path.of("imageStorage");
+        Path uploadPath = Path.of("../imageStorage");
         String filename = username + ".jpg";
         Path filePath = uploadPath.resolve(filename);
 
@@ -50,7 +50,7 @@ public class ImageService {
 
     // Delete an image
     public Boolean deleteImage(String username) throws IOException {
-        Path uploadPath = Path.of("imageStorage");
+        Path uploadPath = Path.of("../imageStorage");
         String filename = username;
         Path filePath = uploadPath.resolve(filename);
 

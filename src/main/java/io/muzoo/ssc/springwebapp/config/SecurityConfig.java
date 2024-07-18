@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+//    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
@@ -50,9 +51,11 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/api/signup", "/api/signin", "/api/user/**").permitAll() // Allow POST to signup and signin
+                        .requestMatchers(HttpMethod.GET, "/api/user/**").permitAll()  // Other GET requests
                         .anyRequest().authenticated()  // All other requests need authentication
                 )
                 .authenticationProvider(authenticationProvider());
+
         return http.build();
     }
 
