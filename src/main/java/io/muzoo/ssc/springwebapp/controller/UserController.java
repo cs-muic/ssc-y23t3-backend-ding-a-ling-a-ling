@@ -8,6 +8,7 @@ import io.muzoo.ssc.springwebapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -25,38 +26,43 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
     @Autowired
     private ImageService imageService;
 
-
-    @GetMapping("/api/user/{id}")
-    @PreAuthorize("hasRole('USER')")
-    public User getName(@PathVariable Long id) {
-        return userService.getUser(id);
+    @PostMapping("/profile")
+    public UserDTO getProfile(@RequestParam("username") String username) {
+        try {
+            return userService.getProfile(username);
+        } catch (IOException e) {
+            return null;
+        }
     }
 
-    @GetMapping("/api/search")
-    @PreAuthorize("hasRole('USER')")
-    public User search(@RequestParam(required = false) String q) {
-        return userService.search(q);
-    }
-
-    @GetMapping("/api/profile/{username}")
-    @PreAuthorize("hasRole('USER')")
-    public String getProfile(@PathVariable String username) {
-        return userService.getProfile(username);
-    }
-
-    @PostMapping("/update") //TODO: can change the para, to restrict user to change stuff
-    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/update")
     public String updateUser(@ModelAttribute UpdateUserRequest updateUserRequest) throws IOException {
         return userService.updateUser(updateUserRequest);
     }
 
     @GetMapping("/matches")
-    public List<User> getMatchesByDislikes(@RequestParam("username") String username) {
-        return userService.findMatchesByUserDislikes(username);
+    public List<User> getMatchesByDislikes(@RequestParam("token") String token) {
+        return userService.findMatchesByToken(token);
     }
+
+    @GetMapping("/image")
+    @PreAuthorize("hasRole('USER')")
+    public String getImage(@RequestParam String username) throws IOException {
+        return imageService.getImage(username);
+    }
+
+    @GetMapping("/preferences")
+    public List<String> userPref(@RequestParam("token") String token) {
+        return userService.getUserPreferences(token);
+    }
+
+    @GetMapping("/dislikes")
+    public List<String> userDislikes(@RequestParam("token") String token) {
+        return userService.getUserDislikes(token);
+    }
+
 }
 

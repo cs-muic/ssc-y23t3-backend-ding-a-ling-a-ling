@@ -5,6 +5,7 @@ import io.muzoo.ssc.springwebapp.dto.UserDTO;
 import io.muzoo.ssc.springwebapp.models.User;
 import io.muzoo.ssc.springwebapp.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.boot.jaxb.cfg.spi.JaxbCfgEventListenerGroupType;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -32,34 +35,26 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    public User getUser(Long id) {
-        return userRepository.findById(id).orElse(null);
-    }
-
-    public User search(String username) {
-        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    }
-
-    public String getProfile(String username) {
+    public UserDTO getProfile(String username) throws IOException {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        if (user != null) {
-            StringBuilder profiles = new StringBuilder();
-            profiles.append("Username: ").append(user.getUsername()).append("\n");
-            profiles.append("Email: ").append(user.getEmail()).append("\n");
-            profiles.append("Address: ").append(user.getAddress()).append("\n");
-            profiles.append("First Name: ").append(user.getFirstName()).append("\n");
-            profiles.append("Last Name: ").append(user.getLastName()).append("\n");
-            profiles.append("Phone Number: ").append(user.getPhoneNumber()).append("\n");
-            profiles.append("Age: ").append(user.getAge()).append("\n");
-            profiles.append("Height: ").append(user.getHeight()).append("\n");
-            profiles.append("Display Name: ").append(user.getDisplayName()).append("\n");
-            profiles.append("Contact: ").append(user.getContact()).append("\n");
-            profiles.append("Biography: ").append(user.getBiography()).append("\n");
-            profiles.append("Preferences: ").append(user.getPreferences()).append("\n");
-            profiles.append("Dislikes: ").append(user.getDislikes()).append("\n");
-            return profiles.toString();
-        }
-        return null;
+
+        UserDTO userDTO = UserDTO.builder()
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .address(user.getAddress())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .phoneNumber(user.getPhoneNumber())
+                .profilePicture(imageService.getImage(username))
+                .age(user.getAge())
+                .height(user.getHeight())
+                .displayName(user.getDisplayName())
+                .contact(user.getContact())
+                .biography(user.getBiography())
+                .dislikes(user.getDislikes())
+                .preferences(user.getPreferences())
+                .build();
+        return userDTO;
     }
 
     public String createUser(UserDTO userDTO) {
@@ -69,6 +64,16 @@ public class UserService implements UserDetailsService {
         return String.format("Created user %s successfully", userDTO.getUsername());
     }
 
+    public String convertTokenToUsername(String token) {
+
+        String username = jwtService.extractUsername(token);
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if (!jwtService.validateToken(token, user)) {
+            return "invalid";
+        }
+
+        return username;
+    }
 
     public String updateUser(UpdateUserRequest updateUserRequest) throws IOException {
         String token = updateUserRequest.getToken();
@@ -76,11 +81,13 @@ public class UserService implements UserDetailsService {
             return "Token is required";
         }
 
-        String username = jwtService.extractUsername(token);
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        if (!jwtService.validateToken(token, user)) {
+        String username = convertTokenToUsername(token);
+        if (username.equalsIgnoreCase("invalid")) {
             return "Token is invalid";
         }
+
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
         // change user info just the one that isn't black or null
         String firstName = updateUserRequest.getFirstName();
         String lastName = updateUserRequest.getLastName();
@@ -138,7 +145,6 @@ public class UserService implements UserDetailsService {
     }
 
     private void setUserInfo(User user, UserDTO userDTO) {
-
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
         user.setAddress(userDTO.getAddress());
@@ -153,15 +159,11 @@ public class UserService implements UserDetailsService {
         user.setBiography(userDTO.getBiography());
         user.setPreferences(userDTO.getPreferences());
         user.setDislikes(userDTO.getDislikes());
+        user.setRole(userDTO.getRole());
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
     }
 
-    public User save(User newUser) {
-        if (newUser.getId() == null) {
-            newUser.setCreatedAt(LocalDateTime.now());
-        }
-        newUser.setUpdatedAt(LocalDateTime.now());
-        return userRepository.save(newUser);
-    }
 
     public String getAllUsers() {
         StringBuilder allUsers = new StringBuilder();
@@ -170,12 +172,44 @@ public class UserService implements UserDetailsService {
         }
         return allUsers.toString();
     }
-    public List<User> findMatchesByUserDislikes(String username) {
-        // Find user by username
-        User user = userRepository.findByUsername(username).isEmpty() ? null : userRepository.findByUsername(username).get();
+
+    public List<User> findMatchesByToken(String token) {
+        String username = convertTokenToUsername(token);
+
+//        UserDTO user = userRepository.findByUsername(username).isEmpty() ? null : userRepository.findByUsername(username).get();
+
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
         if (user == null) {
             throw new RuntimeException("User not found with username: " + username);
         }
-        return userRepository.findMatchesByDislikes(user.getId(), user.getDislikes());
+
+        List<User> users = userRepository.findUsersByDislikesAndPreferences(user.getDislikes(), user.getPreferences());
+
+        return users;
     }
+
+    public List<String> getUserDislikes(String token){
+        String username = convertTokenToUsername(token);
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        ArrayList<String> dislikesList = new ArrayList<>(user.getDislikes());
+        return dislikesList;
+    }
+
+    public List<String> getUserPreferences(String token){
+        String username = convertTokenToUsername(token);
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        ArrayList<String> preferencesList = new ArrayList<>(user.getPreferences());
+        return preferencesList;
+    }
+
+    public boolean deleteUser(String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user != null) {
+            userRepository.delete(user);
+            return true;
+        }
+        return false;
+    }
+
 }

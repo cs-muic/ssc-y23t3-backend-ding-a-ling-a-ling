@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Base64;
 
 
 @Service
@@ -19,14 +20,11 @@ public class ImageService {
         if (imageFile == null || imageFile.isEmpty()) {
             return false;
         }
+        String uniqueFileName = username + ".jpg";
 
-        System.out.println("the username is " + username);
-        String uniqueFileName = username + "uu.jpg";
-
-        Path uploadPath = Path.of("imageStorage", username);
+        Path uploadPath = Path.of("imageStorage");
         Path filePath = uploadPath.resolve(uniqueFileName);
 
-        System.out.println("the upload path is " + uploadPath); // try check if this is working
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
@@ -37,19 +35,17 @@ public class ImageService {
     }
 
     // To view an image
-    public byte[] getImage(String username) throws IOException {
+    public String getImage(String username) throws IOException {
         Path uploadPath = Path.of("imageStorage");
         String filename = username + ".jpg";
         Path filePath = uploadPath.resolve(filename);
 
-        System.out.println("getImage path: " + filePath);
 
         if (Files.exists(filePath)) {
-            System.out.println("Image exists");
             byte[] imageBytes = Files.readAllBytes(filePath);
-            return imageBytes;
+            // convert byte array to base64 string for frontend
+            return Base64.getEncoder().encodeToString(imageBytes);
         } else {
-            System.out.println("Image does not exist");
             return null; // Handle missing images
         }
     }

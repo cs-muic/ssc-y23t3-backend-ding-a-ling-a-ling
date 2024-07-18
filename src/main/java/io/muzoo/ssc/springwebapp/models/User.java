@@ -16,11 +16,11 @@ import java.util.Set;
 @Setter
 @Getter
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @ToString
+@Builder
 public class User implements UserDetails {
 
     @Id
@@ -93,7 +93,6 @@ public class User implements UserDetails {
         // our "username" for security is the email field
         return username;
     }
-
 
     @Override
     public boolean isAccountNonExpired() {

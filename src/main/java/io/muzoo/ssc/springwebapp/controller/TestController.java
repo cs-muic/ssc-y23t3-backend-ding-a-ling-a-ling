@@ -4,8 +4,7 @@ import io.muzoo.ssc.springwebapp.models.User;
 import io.muzoo.ssc.springwebapp.repositories.UserRepository;
 import io.muzoo.ssc.springwebapp.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.GetMapping;//package io.muzoo.ssc.springwebapp.controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import io.muzoo.ssc.springwebapp.service.UserService;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @RestController
@@ -24,7 +21,6 @@ public class TestController {
 
     @Autowired
     private UserService userService;
-
     @Autowired
     private ImageService imageService;
     @Autowired
@@ -48,18 +44,6 @@ public class TestController {
         return "ONLY admins can see this";
     }
 
-    @GetMapping("/search")
-    @PreAuthorize("hasRole('USER')")
-    public User search(@RequestParam(required = false) String q) {
-        return userService.search(q);
-    }
-
-    @GetMapping("/profile/{username}")
-    @PreAuthorize("hasRole('USER')")
-    public String getProfile(@PathVariable String username) {
-        return userService.getProfile(username);
-    }
-
     @PostMapping("/imgTest")
     public String uploadImage(@RequestParam("file") MultipartFile file, @RequestParam("username") String username) throws IOException {
         if (imageService.saveImageToStorage(username, file)){
@@ -69,14 +53,13 @@ public class TestController {
         }
     }
 
-    @GetMapping("/getImage")
-    public byte[] getImage(@RequestParam("username") String username) throws IOException {
-
-        byte[] imageBytes = imageService.getImage(username);
-        if (imageBytes == null) {
-            return "?ayy lmao?".getBytes();
+    @PostMapping("/delete")
+    public String delete(@RequestParam("username") String username) {
+        if (userService.deleteUser(username)){
+            return "User deleted successfully";
+        } else {
+            return "Failed to delete user";
         }
-        return imageBytes;
     }
 
 }

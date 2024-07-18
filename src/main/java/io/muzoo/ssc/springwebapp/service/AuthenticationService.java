@@ -3,6 +3,7 @@ package io.muzoo.ssc.springwebapp.service;
 import io.muzoo.ssc.springwebapp.dto.AuthenticationResponse;
 import io.muzoo.ssc.springwebapp.dto.SignInRequest;
 import io.muzoo.ssc.springwebapp.dto.SignUpRequest;
+import io.muzoo.ssc.springwebapp.dto.UserDTO;
 import io.muzoo.ssc.springwebapp.models.Role;
 import io.muzoo.ssc.springwebapp.models.User;
 import io.muzoo.ssc.springwebapp.repositories.UserRepository;
@@ -27,10 +28,7 @@ import java.util.List;
 public class AuthenticationService {
 
     public final UserRepository userRepository;
-
-    @Autowired
     final UserService userService;
-
     final PasswordEncoder passwordEncoder;
     final JwtService jwtService;
     final AuthenticationManager authenticationManager;
@@ -39,10 +37,14 @@ public class AuthenticationService {
     public AuthenticationResponse signup(SignUpRequest request) throws IOException {
 
         if (userRepository.existsByUsername(request.getUsername())) {
+            System.out.println("username:" + request.getUsername());
             return AuthenticationResponse.builder().response("Username already taken").build();
         }
+        if (userRepository.existsByEmail(request.getEmail())) {
+            return AuthenticationResponse.builder().response("Email already taken").build();
+        }
 
-        var user = User
+        var user = UserDTO
                 .builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
@@ -61,41 +63,48 @@ public class AuthenticationService {
                 .role(Role.ROLE_USER)
                 .build();
 
-        user = userService.save(user);
+        userService.createUser(user);
 
         String username = user.getUsername();
 
         MultipartFile profilePicture = request.getProfilePicture();
+        var jwt = jwtService.generateToken(user.getUsername());
+
         if (!imageService.saveImageToStorage(username, profilePicture)){
-            return AuthenticationResponse.builder().response("User created but failed to save image").build();
+            return AuthenticationResponse.builder().token(jwt).response("User created but failed to save image").build();
         }
 
-        var jwt = jwtService.generateToken(user.getUsername());
         return AuthenticationResponse.builder().token(jwt).response("User successfully created!").build();
     }
 
 
     public AuthenticationResponse signin(SignInRequest request) {
         try {
-            // Authenticating the user's credentials
-
             String password = request.getPassword();
-            String email = request.getEmail();
+            String username = request.getUsername();
 
-            var user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
+            System.out.println("username:" + username);
 
+
+            User user = userRepository.findByUsername(username).orElse(null);
+
+            if (user == null) {
+                return AuthenticationResponse.builder().response("Invalid username.").build();
+            }
 
             if (!passwordEncoder.matches(password, user.getPassword())) {
-                throw new IllegalArgumentException("Invalid email or password.");
+                return AuthenticationResponse.builder().response("Wrong password.").build();
             }
 
             var jwt = jwtService.generateToken(user.getUsername());
 
-            return AuthenticationResponse.builder().token(jwt).build();
+            return AuthenticationResponse.builder().token(jwt).response("successfully changed").build();
+
         } catch (AuthenticationException e) {
+
             return AuthenticationResponse.builder().response("Invalid email or password.").build();
         }
+
     }
 
 

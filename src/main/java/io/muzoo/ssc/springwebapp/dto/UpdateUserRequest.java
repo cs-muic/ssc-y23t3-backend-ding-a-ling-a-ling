@@ -14,7 +14,7 @@ public class UpdateUserRequest {
     String token;
     String firstName;
     String lastName;
-    String Address;
+    String address;
     String phoneNumber;
     int age;
     double height;

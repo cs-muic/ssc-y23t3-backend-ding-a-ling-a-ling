@@ -36,5 +36,4 @@ public class AuthenticationController {
         return authenticationService.signin(request);
     }
 
-
 }
