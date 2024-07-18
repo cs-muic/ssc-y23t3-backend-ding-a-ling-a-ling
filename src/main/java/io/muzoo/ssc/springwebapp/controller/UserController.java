@@ -50,8 +50,9 @@ public class UserController {
 
     //    get the matches according to the index
     @GetMapping("/matchebyindex")
-    public UserDTO getMatchByTokenAndIndex(@RequestParam("token") String token, @RequestParam("index") int index) throws IOException {
-        return userService.getMatchByTokenAndIndex(token, index);
+    public UserDTO getMatchByTokenAndIndex(@RequestParam("token") String token, @RequestParam("index") String index) throws IOException {
+        Integer indexInt = Integer.parseInt(index);
+        return userService.getMatchByTokenAndIndex(token, indexInt);
     }
 
     //    get the amount of the matches

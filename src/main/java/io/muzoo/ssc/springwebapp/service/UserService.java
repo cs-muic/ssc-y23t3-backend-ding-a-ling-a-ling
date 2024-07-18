@@ -164,7 +164,7 @@ public class UserService implements UserDetailsService {
 
     }
 
-    public Integer findAmtMatchesByToken(String token) {
+    public int findAmtMatchesByToken(String token) {
         String username = convertTokenToUsername(token);
 
         User user = userRepository.findByUsername(username).isEmpty() ? null : userRepository.findByUsername(username).get();
@@ -179,7 +179,6 @@ public class UserService implements UserDetailsService {
         ArrayList<User> allMatches = new ArrayList<>();
         for (User match : matchesByDislikes) {
             if (matchesByPreferences.contains(match)) {
-                System.out.println("Match: " + match.getUsername());
                 allMatches.add(match);
             }
         }
