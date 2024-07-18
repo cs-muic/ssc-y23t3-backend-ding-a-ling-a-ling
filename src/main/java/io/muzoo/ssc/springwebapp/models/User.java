@@ -57,9 +57,6 @@ public class User implements UserDetails {
     @Column(name = "display_name")
     private String displayName;
 
-//    @Column(name = "profile_picture_url")
-//    private String profilePicture;
-
     @Column(name = "contact_number")
     private String contact;
 
@@ -74,12 +71,10 @@ public class User implements UserDetails {
 
 
     @ElementCollection
-//    @CollectionTable(name = "join_user_preferences", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "preference")
     private Set<String> preferences = new HashSet<>();
 
     @ElementCollection
-//    @CollectionTable(name = "join_user_dislikes", joinColumns = @JoinColumn(name = "dislike"))
     @Column(name = "dislike")
     private Set<String> dislikes = new HashSet<>();
 

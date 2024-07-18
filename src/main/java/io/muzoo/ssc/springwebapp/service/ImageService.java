@@ -1,10 +1,8 @@
 package io.muzoo.ssc.springwebapp.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.sound.midi.Track;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
