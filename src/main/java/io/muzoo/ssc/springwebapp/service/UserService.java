@@ -1,6 +1,7 @@
 package io.muzoo.ssc.springwebapp.service;
 
 import io.muzoo.ssc.springwebapp.SpringWebappApplication;
+import io.muzoo.ssc.springwebapp.dto.MatchingResponse;
 import io.muzoo.ssc.springwebapp.dto.UpdateUserRequest;
 import io.muzoo.ssc.springwebapp.dto.UserDTO;
 import io.muzoo.ssc.springwebapp.models.User;
@@ -143,7 +144,7 @@ public class UserService implements UserDetailsService {
         return allUsers.toString();
     }
 
-    public UserDTO getMatchByTokenAndIndex(String token, int index) throws IOException {
+    public MatchingResponse getMatchByTokenAndIndex(String token, int index) throws IOException {
         String username = convertTokenToUsername(token);
 
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -151,16 +152,22 @@ public class UserService implements UserDetailsService {
         if (user == null) {
             throw new RuntimeException("User not found with username: " + username);
         }
-        System.out.println("Matches size: " + user.getMatches().size());
-        System.out.println("index: " + index);
 
         if (index < 0 || index >= user.getMatches().size()) {
             throw new RuntimeException("Index out of bounds");
         }
 
         User theMatch = user.getMatches().get(index);
+        MatchingResponse matchingResponse = MatchingResponse.builder()
+                .displayName(theMatch.getDisplayName())
+                .biography(theMatch.getBiography())
+                .age(theMatch.getAge())
+                .contacts(theMatch.getContact())
+                .dislikes(theMatch.getDislikes())
+                .username(theMatch.getUsername())
+                .build();
 
-        return getProfile(theMatch.getUsername());
+        return matchingResponse;
 
     }
 

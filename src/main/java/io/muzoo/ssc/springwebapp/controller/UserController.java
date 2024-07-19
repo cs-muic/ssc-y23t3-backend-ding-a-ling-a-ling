@@ -1,5 +1,6 @@
 package io.muzoo.ssc.springwebapp.controller;
 
+import io.muzoo.ssc.springwebapp.dto.MatchingResponse;
 import io.muzoo.ssc.springwebapp.dto.UpdateUserRequest;
 import io.muzoo.ssc.springwebapp.dto.UserDTO;
 import io.muzoo.ssc.springwebapp.models.User;
@@ -50,8 +51,8 @@ public class UserController {
 
     //    get the matches according to the index
     @GetMapping("/matchebyindex")
-    public UserDTO getMatchByTokenAndIndex(@RequestParam("token") String token, @RequestParam("index") String index) throws IOException {
-        Integer indexInt = Integer.parseInt(index);
+    public MatchingResponse getMatchByTokenAndIndex(@RequestParam("token") String token, @RequestParam("index") String index) throws IOException {
+        int indexInt = Integer.parseInt(index);
         return userService.getMatchByTokenAndIndex(token, indexInt);
     }
 
@@ -60,7 +61,6 @@ public class UserController {
     public int getMatchesAmount(@RequestParam("token") String token) {
         return userService.findAmtMatchesByToken(token);
     }
-
 
     @GetMapping("/preferences")
     public List<String> userPref(@RequestParam("token") String token) {
@@ -75,6 +75,7 @@ public class UserController {
     @GetMapping("/images")
     public ResponseEntity<String> getImage(@RequestParam("username") String username) {
         try {
+            System.out.println("Getting image for " + username);
             String base64Image = imageService.getImage(username);
             if (base64Image != null) {
                 return ResponseEntity.ok().body(base64Image);
